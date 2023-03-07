@@ -20,8 +20,8 @@
             android:id="@+id/iv_menu_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginVertical="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
             android:background="@drawable/account_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
             android:id="@+id/iv_neatflix_banner"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:layout_marginStart="68dp"
+            android:layout_marginStart="80dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/neatflix_name"
             app:layout_constraintStart_toEndOf="@id/iv_menu_icon"
@@ -40,12 +40,14 @@
             android:id="@+id/iv_search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_icon"
             android:layout_marginVertical="20dp"
-            app:layout_constraintTop_toTopOf="parent"
-
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/search_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.726"
             app:layout_constraintStart_toEndOf="@id/iv_neatflix_banner"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -53,6 +55,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,8 +70,8 @@
         android:textSize="@dimen/rv_heading_dimen"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginStart="@dimen/_5sdp"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -76,8 +79,8 @@
         android:id="@+id/rv_genre_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintTop_toBottomOf="@+id/tv_rv_heading"
         app:layout_constraintEnd_toEndOf="parent" />
 

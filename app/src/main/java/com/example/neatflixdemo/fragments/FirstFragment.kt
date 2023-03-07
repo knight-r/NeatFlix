@@ -10,24 +10,32 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.neatflixdemo.MainActivity
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
-
-import com.example.neatflixdemo.services.GetDataService
 import com.example.neatflixdemo.adapter.RVGenreAdapter
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentFirstBinding
 import com.example.neatflixdemo.databinding.RowAddItemBinding
 import com.example.neatflixdemo.dataclasses.*
+import com.example.neatflixdemo.model.MainViewModel
 import com.example.neatflixdemo.network.RetrofitClient
+import com.example.neatflixdemo.services.GetDataService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class FirstFragment : Fragment() {
     private  var _binding:FragmentFirstBinding?= null
     private lateinit var llViewBinding: RowAddItemBinding
     private lateinit var layoutList: LinearLayout
+    var popularMovieList:List<Result> = emptyList()
+    var nowPlayingList:List<Result> = emptyList()
+    var recommendedMovieList:List<Result> = emptyList()
+    var topRatedMovieList:List<Result> = emptyList()
+    var upcomingMovieList:List<Result> = emptyList()
+    private var totalMovieList = mutableListOf<Result>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +44,14 @@ class FirstFragment : Fragment() {
         _binding = FragmentFirstBinding.inflate(layoutInflater,container,false)
         llViewBinding = RowAddItemBinding.inflate(layoutInflater,container,false)
         layoutList = _binding!!.layoutList
+
+
+
+
         getMovieGenre()
         addView()
+        (activity as MainActivity?)?.sendData(totalMovieList)
+
         return _binding?.root
     }
 
@@ -77,13 +91,31 @@ class FirstFragment : Fragment() {
     }
 
     private fun addView(){
-        getPopularMovies()
-        getNowPlayingMovies()
-        getRecommendedMovies()
-        //getLatestMovies()
-        getTopRatedMovies()
-        getUpComingMovies()
-
+        if(popularMovieList.isNotEmpty()) {
+            addViewToLayoutList("Popular",popularMovieList)
+        } else {
+            getPopularMovies()
+        }
+        if(nowPlayingList.isNotEmpty()) {
+            addViewToLayoutList("Now Playing", nowPlayingList)
+        } else {
+            getNowPlayingMovies()
+        }
+        if(recommendedMovieList.isNotEmpty()) {
+            addViewToLayoutList("Recommendations",recommendedMovieList)
+        } else {
+            getRecommendedMovies()
+        }
+        if(topRatedMovieList.isNotEmpty()) {
+            addViewToLayoutList("Top Rated",topRatedMovieList)
+        }else {
+            getTopRatedMovies()
+        }
+        if(upcomingMovieList.isNotEmpty()){
+            addViewToLayoutList("Upcoming Movies", upcomingMovieList)
+        }else {
+            getUpComingMovies()
+        }
     }
 
     /** this method get the list of recommended movies
@@ -96,14 +128,9 @@ class FirstFragment : Fragment() {
             Callback<Recommendations?> {
             override fun onResponse(call: Call<Recommendations?>, response: Response<Recommendations?>) {
                 val listBody = response.body()
-                val popularMovieList: List<Result> = listBody!!.results
-                val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Recommendations"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, popularMovieList)
-
-                layoutList.addView(llView)
+                recommendedMovieList = listBody!!.results
+                addViewToLayoutList("Now Playing",recommendedMovieList)
+                addTotalMovieList(recommendedMovieList)
             }
             override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
@@ -121,13 +148,9 @@ class FirstFragment : Fragment() {
             Callback<Upcoming?> {
             override fun onResponse(call: Call<Upcoming?>, response: Response<Upcoming?>) {
                 val listBody = response.body()
-                val popularMovieList: List<Result> = listBody!!.results
-                val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Upcoming Movies"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, popularMovieList)
-                layoutList.addView(llView)
+                upcomingMovieList = listBody!!.results
+                addViewToLayoutList("Now Playing",upcomingMovieList)
+                addTotalMovieList(upcomingMovieList)
             }
             override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
@@ -145,14 +168,10 @@ class FirstFragment : Fragment() {
             Callback<TopRated?> {
             override fun onResponse(call: Call<TopRated?>, response: Response<TopRated?>) {
                 val listBody = response.body()
-                // Log.e("FirstFragment: ",response.body().toString())
-                val popularMovieList: List<Result> = listBody!!.results
-                val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Top Rated"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, popularMovieList)
-                layoutList.addView(llView)
+                topRatedMovieList = listBody!!.results
+                addViewToLayoutList("Now Playing",topRatedMovieList)
+                addTotalMovieList(topRatedMovieList)
+
             }
             override fun onFailure(call: Call<TopRated?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
@@ -170,13 +189,10 @@ class FirstFragment : Fragment() {
             Callback<NowPlaying?> {
             override fun onResponse(call: Call<NowPlaying?>, response: Response<NowPlaying?>) {
                 val listBody = response.body()
-                val popularMovieList: List<Result> = listBody!!.results
-                val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Now Playing"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, popularMovieList)
-                layoutList.addView(llView)
+                nowPlayingList = listBody!!.results
+                addViewToLayoutList("Now Playing",nowPlayingList)
+                addTotalMovieList(nowPlayingList)
+
             }
             override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
@@ -192,19 +208,23 @@ class FirstFragment : Fragment() {
             Callback<PopularMovies?> {
             override fun onResponse(call: Call<PopularMovies?>, response: Response<PopularMovies?>) {
                 val listBody = response.body()
-                val popularMovieList: List<Result> = listBody!!.results
-                val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Popular"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, popularMovieList)
-                layoutList.addView(llView)
+                popularMovieList = listBody!!.results
+                addViewToLayoutList("Popular", popularMovieList)
+                addTotalMovieList(popularMovieList)
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
 
+    }
+    fun addViewToLayoutList(textString:String, movieList:List<Result>){
+        val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
+        val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
+        textView.text = textString
+        val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
+        setDataToRecyclerView(recyclerView, movieList)
+        layoutList.addView(llView)
     }
     private fun setDataToRecyclerView(recyclerView:RecyclerView, popularMovieList:List<Result> ){
         recyclerView.apply {
@@ -216,6 +236,15 @@ class FirstFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL,
             false
         )
+    }
+
+    private fun addTotalMovieList(movieList:List<Result>){
+        for(items in movieList){
+           totalMovieList.add(items)
+        }
+    }
+    interface FirstFragmentToActivity{
+        fun sendData(totalMovieList:List<Result>)
     }
 
 

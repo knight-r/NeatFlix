@@ -2,8 +2,8 @@ package com.example.neatflixdemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import coil.load
+import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityShowDetailsBinding
 
 @Suppress("DEPRECATION")
@@ -17,7 +17,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         val posterPath = bundle?.getString("result_image")
         val overView = bundle?.getSerializable("result_overview")
 
-        binding.ivMovieDetails.load("https://image.tmdb.org/t/p/original" + posterPath.toString() ) {
+        binding.ivMovieDetails.load(Constants.API_TMDB_IMAGE_BASE_URL + posterPath.toString() ) {
             crossfade(true)
         }
         binding.tvMovieDetails.text = "Overview: " + overView.toString()

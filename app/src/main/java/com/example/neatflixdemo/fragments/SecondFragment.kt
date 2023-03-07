@@ -193,5 +193,8 @@ class SecondFragment : Fragment() {
             false
         )
     }
+    interface SecondFragmentToActivity{
+        fun sendTvShowData(totalMovieList:List<Result>)
+    }
 
 }

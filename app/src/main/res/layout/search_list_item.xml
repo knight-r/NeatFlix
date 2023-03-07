@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/iv_search_item"
+        android:background="@drawable/ic_launcher_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_75sdp"/>
+    <TextView
+        android:id="@+id/tv_name_search_item"
+        app:layout_constraintStart_toEndOf="@id/iv_search_item"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:textColor="@color/white"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:text="Movie Name"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/tv_release_date_search_item"
+        app:layout_constraintStart_toEndOf="@id/iv_search_item"
+        app:layout_constraintTop_toBottomOf="@id/tv_name_search_item"
+        android:textColor="@color/white"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:text="Release Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <RatingBar
+        android:id="@+id/rating_bar"
+        app:layout_constraintTop_toBottomOf="@id/tv_release_date_search_item"
+        app:layout_constraintStart_toEndOf="@+id/iv_search_item"
+        android:numStars="5"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/tv_genre_search_item"
+        app:layout_constraintStart_toEndOf="@id/iv_search_item"
+        app:layout_constraintTop_toBottomOf="@id/rating_bar"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/white"
+        android:layout_marginTop="0dp"
+        android:text="Genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

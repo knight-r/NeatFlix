@@ -1,19 +1,16 @@
 package com.example.neatflixdemo.adapter
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.ShowDetailsActivity
+import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.dataclasses.Result
 
 class RVAddViewAdapter(private val mList:List<Result>): RecyclerView.Adapter<RVAddViewAdapter.ViewHolder>() {
@@ -25,7 +22,7 @@ class RVAddViewAdapter(private val mList:List<Result>): RecyclerView.Adapter<RVA
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.imageView.load("https://image.tmdb.org/t/p/original"+ mList[position].poster_path) {
+        holder.imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + mList[position].poster_path) {
             crossfade(true)
         }
        holder.itemView.setOnClickListener{

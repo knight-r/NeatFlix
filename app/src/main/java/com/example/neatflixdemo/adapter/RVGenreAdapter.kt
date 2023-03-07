@@ -53,7 +53,6 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             }else{
                 addViewInTvShows()
             }
-
             notifyDataSetChanged()
         }
 
