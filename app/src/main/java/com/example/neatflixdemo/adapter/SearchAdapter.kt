@@ -2,7 +2,6 @@ package com.example.neatflixdemo.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.database.DataSetObserver
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +12,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.neatflixdemo.R
-import com.example.neatflixdemo.ShowDetailsActivity
+import com.example.neatflixdemo.activities.ShowDetailsActivity
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.dataclasses.Result
+import java.io.Serializable
+
 
 class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
@@ -38,13 +39,23 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
             searchItemIV.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                 crossfade(true)
             }
-            titleTV.text = model.title
+            model.title?.let {
+                titleTV.text = model.title
+            }
+            model.name?.let {
+                titleTV.text = model.name
+            }
+
+
+
+            ratingBar.rating = model.vote_average.toFloat() / 2
+
         }
         holder.itemView.setOnClickListener{
             val intent = Intent(_context, ShowDetailsActivity::class.java)
             val bundle = Bundle()
-            bundle.putString("result_image", mList[position].poster_path)
-            bundle.putString("result_overview",mList[position].overview)
+            bundle.putSerializable("result_data", model as Serializable)
+
             intent.putExtras(bundle)
             _context.startActivity(intent)
         }

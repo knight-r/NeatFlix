@@ -5,7 +5,7 @@
     android:background="@color/background_color_app"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
@@ -20,33 +20,48 @@
             android:id="@+id/iv_menu_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_20sdp"
-            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_20sdp"
             android:background="@drawable/account_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fake_view1"
+            app:layout_constraintStart_toEndOf="@+id/iv_menu_icon"
+            app:layout_constraintEnd_toStartOf="@+id/iv_neatflix_banner"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
         <ImageView
             android:id="@+id/iv_neatflix_banner"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="0dp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/neatflix_name"
-            app:layout_constraintStart_toEndOf="@id/iv_menu_icon"
+            app:layout_constraintStart_toEndOf="@id/fake_view1"
+            app:layout_constraintEnd_toStartOf="@+id/fake_view2"
             app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/fake_view2"
+            app:layout_constraintStart_toEndOf="@+id/iv_neatflix_banner"
+            app:layout_constraintEnd_toStartOf="@+id/iv_search_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
         <ImageView
             android:id="@+id/iv_search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             android:background="@drawable/search_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.726"
-            app:layout_constraintStart_toEndOf="@id/iv_neatflix_banner"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

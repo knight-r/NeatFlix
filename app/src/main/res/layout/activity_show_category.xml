@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_color_app"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ShowCategory">
+    <ImageView
+        android:id="@+id/back_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/ic_back_button"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/tv_category_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Category Name"
+        android:textSize="@dimen/rv_heading_dimen"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_show_category"
+        app:layout_constraintTop_toBottomOf="@+id/tv_category_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

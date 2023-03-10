@@ -14,6 +14,7 @@ data class Result(
     val poster_path: String,
     val release_date: String,
     val title: String,
+    val name: String,
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int

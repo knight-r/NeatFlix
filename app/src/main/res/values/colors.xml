@@ -147,6 +147,7 @@
     <color name="dark_blue">#00008B</color>
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
+    <color name="fade_white">#DDD6D6</color>
     <color name="background_color_app">@color/indigo</color>
     <color name="background_color_secondary_app">#6755D3</color>
     <color name="status_bar_color">#8B7FD8</color>

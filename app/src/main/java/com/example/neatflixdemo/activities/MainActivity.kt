@@ -1,8 +1,10 @@
-package com.example.neatflixdemo
+package com.example.neatflixdemo.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.ViewPagerAdapter
 import com.example.neatflixdemo.databinding.ActivityMainBinding
 import com.example.neatflixdemo.fragments.FirstFragment
@@ -16,11 +18,11 @@ class MainActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,
 
     private lateinit var mainBinding : ActivityMainBinding
     private var totalMovieList:List<Result> = emptyList()
-
+    private var totalTvShowList:List<Result> = emptyList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
-       // window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         setContentView(mainBinding.root)
 
         val tabNameList:List<String> = listOf("Movies","TvShows")
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,
             var intent = Intent(this, SearchActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("movie_list", totalMovieList as Serializable)
+            bundle.putSerializable("tv_show_list", totalTvShowList as Serializable)
             intent.putExtras(bundle)
             startActivity(intent)
         }
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,
     }
 
     override fun sendTvShowData(tvShowList: List<Result>) {
-        TODO("Not yet implemented")
+        totalTvShowList = tvShowList
     }
 
     private fun setupTabLayout(tabNameList:List<String>) {

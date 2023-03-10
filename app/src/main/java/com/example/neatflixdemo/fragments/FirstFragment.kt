@@ -1,40 +1,43 @@
 package com.example.neatflixdemo.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.neatflixdemo.MainActivity
+import com.example.neatflixdemo.activities.MainActivity
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.adapter.RVGenreAdapter
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentFirstBinding
 import com.example.neatflixdemo.databinding.RowAddItemBinding
 import com.example.neatflixdemo.dataclasses.*
-import com.example.neatflixdemo.model.MainViewModel
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.services.GetDataService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 
 class FirstFragment : Fragment() {
     private  var _binding:FragmentFirstBinding?= null
     private lateinit var llViewBinding: RowAddItemBinding
     private lateinit var layoutList: LinearLayout
-    var popularMovieList:List<Result> = emptyList()
-    var nowPlayingList:List<Result> = emptyList()
-    var recommendedMovieList:List<Result> = emptyList()
-    var topRatedMovieList:List<Result> = emptyList()
-    var upcomingMovieList:List<Result> = emptyList()
+    private var popularMovieList:List<Result> = emptyList()
+    private var nowPlayingList:List<Result> = emptyList()
+    private var recommendedMovieList:List<Result> = emptyList()
+    private var topRatedMovieList:List<Result> = emptyList()
+    private var upcomingMovieList:List<Result> = emptyList()
     private var totalMovieList = mutableListOf<Result>()
 
     override fun onCreateView(
@@ -44,9 +47,6 @@ class FirstFragment : Fragment() {
         _binding = FragmentFirstBinding.inflate(layoutInflater,container,false)
         llViewBinding = RowAddItemBinding.inflate(layoutInflater,container,false)
         layoutList = _binding!!.layoutList
-
-
-
 
         getMovieGenre()
         addView()
@@ -218,6 +218,10 @@ class FirstFragment : Fragment() {
         })
 
     }
+
+    /**
+     *  this method add view item in layout list
+     */
     fun addViewToLayoutList(textString:String, movieList:List<Result>){
         val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
@@ -225,6 +229,15 @@ class FirstFragment : Fragment() {
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
         setDataToRecyclerView(recyclerView, movieList)
         layoutList.addView(llView)
+        val nextButton:ImageView = llView.findViewById(R.id.next_btn)
+        nextButton.setOnClickListener{
+            val intent = Intent(context, ShowCategory::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("category_list", movieList as Serializable)
+            bundle.putString("category_name", textString)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
     }
     private fun setDataToRecyclerView(recyclerView:RecyclerView, popularMovieList:List<Result> ){
         recyclerView.apply {
