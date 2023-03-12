@@ -33,10 +33,17 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
                model.title?.let {
                    nameTV.text = model.title
                }
-               model.release_date?.let {
+               if(model.release_date != null){
                    releaseDateTv.text = "Released on: " + model.release_date
+               }else{
+                   releaseDateTv.visibility = View.GONE
                }
-               ratingTV.text = "Rating: " + model.vote_average
+//               model.release_date?.let {
+//               }
+               model.vote_average.let {
+                   ratingTV.text = "Rating: " + model.vote_average
+               }
+
            }
        }
 

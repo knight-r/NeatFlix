@@ -1,17 +1,20 @@
 package com.example.neatflixdemo.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.activities.MainActivity
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.services.GetDataService
 import com.example.neatflixdemo.adapter.RVGenreAdapter
@@ -22,6 +25,7 @@ import com.example.neatflixdemo.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 class SecondFragment : Fragment() {
     private var _binding:FragmentSecondBinding?=null
@@ -192,6 +196,15 @@ class SecondFragment : Fragment() {
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
         setDataToRecyclerView(recyclerView, movieList)
         layoutListTv.addView(llView)
+        val nextButton: ImageView = llView.findViewById(R.id.next_btn)
+        nextButton.setOnClickListener{
+            val intent = Intent(context, ShowCategory::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("category_list", movieList as Serializable)
+            bundle.putString("category_name", textString)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
     }
 
     /** this method sets the list of Tv Shows of particular category to recyclerView
