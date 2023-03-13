@@ -14,16 +14,26 @@ import com.google.android.material.tabs.TabLayoutMediator
 import java.io.Serializable
 
 
-class MainActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,SecondFragment.SecondFragmentToActivity {
+class DashboardActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,SecondFragment.SecondFragmentToActivity {
 
     private lateinit var mainBinding : ActivityMainBinding
     private var totalMovieList:List<Result> = emptyList()
     private var totalTvShowList:List<Result> = emptyList()
+    private val checkConnection by lazy { CheckConnection(application) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         setContentView(mainBinding.root)
+//        mainBinding.apply {
+//            checkConnection.observe(this@MainActivity) {
+//                if (it) {
+//
+//                }else {
+//
+//                }
+//            }
+//        }
 
         val tabNameList:List<String> = listOf("Movies","TvShows")
 
@@ -36,6 +46,9 @@ class MainActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,
             bundle.putSerializable("tv_show_list", totalTvShowList as Serializable)
             intent.putExtras(bundle)
             startActivity(intent)
+        }
+        mainBinding.ivMenuIcon.setOnClickListener{
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
     }

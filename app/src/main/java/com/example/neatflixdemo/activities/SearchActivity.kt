@@ -1,6 +1,7 @@
 package com.example.neatflixdemo.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
@@ -131,6 +132,7 @@ class SearchActivity : AppCompatActivity() {
                 addTotalTvShowList(tvList)
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
+                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
                 Log.e("SearchActivity: ",t.message.toString())
             }
         })
@@ -150,6 +152,7 @@ class SearchActivity : AppCompatActivity() {
                 addTotalTvShowList(tvList)
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
+                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
                 Log.e("SearchActivity ",t.message.toString())
             }
         })
@@ -170,6 +173,7 @@ class SearchActivity : AppCompatActivity() {
                 addTotalTvShowList(tvList)
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
+                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
                 Log.e("SearchActivity ",t.message.toString())
             }
         })
@@ -190,6 +194,7 @@ class SearchActivity : AppCompatActivity() {
                 addTotalTvShowList(tvList)
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
+                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
                 Log.e("SearchActivity ",t.message.toString())
             }
         })

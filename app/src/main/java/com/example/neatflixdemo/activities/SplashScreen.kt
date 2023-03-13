@@ -17,7 +17,7 @@ class SplashScreen : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
 
         Handler().postDelayed(Runnable {
-            val mainIntent = Intent(this@SplashScreen, MainActivity::class.java)
+            val mainIntent = Intent(this@SplashScreen, DashboardActivity::class.java)
             startActivity(mainIntent)
             finish()
         }, SPLASH_DISPLAY_LENGTH.toLong())

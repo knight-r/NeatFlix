@@ -12,8 +12,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.neatflixdemo.activities.MainActivity
+import com.example.neatflixdemo.activities.DashboardActivity
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ErrorPageActivity
 import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.adapter.RVGenreAdapter
@@ -51,7 +52,7 @@ class FirstFragment : Fragment() {
 
         getMovieGenre()
         addView()
-        (activity as MainActivity?)?.sendData(totalMovieList)
+        (activity as DashboardActivity?)?.sendData(totalMovieList)
 
         return _binding?.root
     }
@@ -71,6 +72,7 @@ class FirstFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 t.message?.let { Log.e("MainActivity: ", it) }
 
             }
@@ -134,6 +136,7 @@ class FirstFragment : Fragment() {
                 addTotalMovieList(recommendedMovieList)
             }
             override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -154,6 +157,7 @@ class FirstFragment : Fragment() {
                 addTotalMovieList(upcomingMovieList)
             }
             override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -175,6 +179,7 @@ class FirstFragment : Fragment() {
 
             }
             override fun onFailure(call: Call<TopRated?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -196,6 +201,7 @@ class FirstFragment : Fragment() {
 
             }
             override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -214,6 +220,7 @@ class FirstFragment : Fragment() {
                 addTotalMovieList(popularMovieList)
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })

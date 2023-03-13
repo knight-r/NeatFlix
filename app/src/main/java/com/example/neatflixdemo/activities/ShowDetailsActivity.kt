@@ -37,8 +37,5 @@ class ShowDetailsActivity : AppCompatActivity() {
             tvShowDetailsRating.text = resultData.vote_average.toString()
         }
 
-
-
-
     }
 }

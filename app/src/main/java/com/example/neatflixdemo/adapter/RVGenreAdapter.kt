@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ErrorPageActivity
 import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentFirstBinding
@@ -54,7 +54,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             genreId = genreList[position].id
             selectedPosition = position
             layout_list.removeAllViewsInLayout()
-            if(tabName.equals("Movies")){
+            if(tabName == "Movies"){
                 addViewInMovies()
             }else{
                 addViewInTvShows()
@@ -253,6 +253,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                 }
             }
             override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
+                _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -280,6 +281,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                 }
             }
             override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
+                _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -308,6 +310,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                 }
             }
             override fun onFailure(call: Call<TopRated?>, t: Throwable) {
+                _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
@@ -336,6 +339,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                 }
             }
             override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
+                _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })

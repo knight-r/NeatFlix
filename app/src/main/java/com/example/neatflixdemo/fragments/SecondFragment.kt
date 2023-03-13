@@ -1,5 +1,6 @@
 package com.example.neatflixdemo.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,8 +11,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.neatflixdemo.activities.MainActivity
+import com.example.neatflixdemo.activities.DashboardActivity
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ErrorPageActivity
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.services.GetDataService
 import com.example.neatflixdemo.adapter.RVGenreAdapter
@@ -41,7 +43,7 @@ class SecondFragment : Fragment() {
         layoutListTv = _binding!!.layoutListTv
         getTvGenreList()
         addView()
-        (activity as MainActivity?)?.sendTvShowData(totalTvShowList)
+        (activity as DashboardActivity?)?.sendTvShowData(totalTvShowList)
         return _binding?.root
 
     }
@@ -85,6 +87,7 @@ class SecondFragment : Fragment() {
 
             }
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 t.message?.let { Log.e("MainActivity: ", it) }
             }
         })
@@ -119,6 +122,7 @@ class SecondFragment : Fragment() {
                 addTotalTvShowList(topRatedTvShowList)
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("SecondFragment: ",t.message.toString())
             }
         })
@@ -139,6 +143,7 @@ class SecondFragment : Fragment() {
                 addTotalTvShowList(popularTvShowList)
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("SecondFragment: ",t.message.toString())
             }
         })
@@ -160,6 +165,7 @@ class SecondFragment : Fragment() {
                 addTotalTvShowList(tvAiringTodayList)
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("SecondFragment: ",t.message.toString())
             }
         })
@@ -181,6 +187,7 @@ class SecondFragment : Fragment() {
                 addTotalTvShowList(recommendedTvShowList)
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
+                startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e("SecondFragment: ",t.message.toString())
             }
         })
