@@ -13,27 +13,28 @@ import com.example.neatflixdemo.databinding.ActivityShowDetailsBinding
 
 @Suppress("DEPRECATION")
 class ShowDetailsActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityShowDetailsBinding
+    private lateinit var binding: ActivityShowDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShowDetailsBinding.inflate(layoutInflater)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         setContentView(binding.root)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         val bundle = intent?.extras
         val resultData = bundle?.getSerializable("result_data") as Result
         binding.apply {
             ivMovieDetails.load(Constants.API_TMDB_IMAGE_BASE_URL + resultData.poster_path) {
                 crossfade(true)
             }
-            tvOverview.text = resultData.overview
+            tvShowDetailsOverview.text = resultData.overview
 
             resultData?.name?.let {
-                tvName.text = resultData?.name
+                tvShowDetailsTitle.text = resultData?.name
             }
             resultData?.title?.let {
-                tvName.text = resultData?.title
+                tvShowDetailsTitle.text = resultData?.title
             }
-            tvRelease.text = resultData.release_date
+            tvShowDetailsReleaseDate.text = resultData.release_date
+            tvShowDetailsRating.text = resultData.vote_average.toString()
         }
 
 

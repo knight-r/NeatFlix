@@ -33,7 +33,7 @@
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:searchIcon="@drawable/search_icon"
+        android:searchHintIcon="@drawable/search_icon"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search"

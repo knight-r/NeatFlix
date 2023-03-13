@@ -35,7 +35,12 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: Result = mList[position]
         holder.apply {
-            releaseDateTV.text = model.release_date
+
+            if(model.release_date != null){
+                releaseDateTV.text = "Released on: " + model.release_date
+            }else{
+                releaseDateTV.visibility = View.GONE
+            }
             searchItemIV.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                 crossfade(true)
             }
@@ -45,8 +50,6 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
             model.name?.let {
                 titleTV.text = model.name
             }
-
-
 
             ratingBar.rating = model.vote_average.toFloat() / 2
 

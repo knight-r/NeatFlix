@@ -1,6 +1,8 @@
 package com.example.neatflixdemo.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +11,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ShowDetailsActivity
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.dataclasses.Result
+import java.io.Serializable
 
 class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<CategoryListAdapter.ViewHolder>() {
     private lateinit var _context: Context
@@ -46,6 +50,13 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
 
            }
        }
+        holder.itemView.setOnClickListener{
+            val intent = Intent(_context, ShowDetailsActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("result_data", model as Serializable)
+            intent.putExtras(bundle)
+            _context.startActivity(intent)
+        }
 
 
     }
@@ -59,8 +70,6 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
         val nameTV : TextView = itemView.findViewById(R.id.tv_category_list_name)
         val releaseDateTv : TextView = itemView.findViewById(R.id.tv_category_list_release_date)
         val ratingTV : TextView = itemView.findViewById(R.id.tv_category_list_rating)
-
-
 
     }
 }

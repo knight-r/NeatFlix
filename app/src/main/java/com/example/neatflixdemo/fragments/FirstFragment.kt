@@ -39,6 +39,7 @@ class FirstFragment : Fragment() {
     private var topRatedMovieList:List<Result> = emptyList()
     private var upcomingMovieList:List<Result> = emptyList()
     private var totalMovieList = mutableListOf<Result>()
+    private var hashMap = mutableMapOf<String,Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -252,8 +253,12 @@ class FirstFragment : Fragment() {
     }
 
     private fun addTotalMovieList(movieList:List<Result>){
+
         for(items in movieList){
-           totalMovieList.add(items)
+          if(!hashMap.contains(items.title)){
+              totalMovieList.add(items)
+              hashMap[items.title] = 1
+          }
         }
     }
     interface FirstFragmentToActivity{

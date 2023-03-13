@@ -1,101 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/background_color_app"
     android:layout_height="match_parent"
-    tools:context=".activities.ShowDetailsActivity">
-
+    android:background="@color/background_color_app"
+    tools:context=".activities.ShowDetailsActivity" >
+ <TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <ImageView
         android:id="@+id/iv_movie_details"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_300sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.027" />
-    <TextView
-        android:id="@+id/tv_movie_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Title:"
-        android:textStyle="bold"
-        android:textSize="@dimen/_16sdp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/iv_movie_details"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-    <TextView
-        android:id="@+id/tv_movie_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Overview:"
-        android:textStyle="bold"
-        android:textSize="@dimen/_16sdp"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_name"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-    <TextView
-        android:id="@+id/tv_release_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/_16sdp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:hint="Release Date:"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_overview"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        android:layout_height="wrap_content" />
+    <TableRow
+        android:layout_marginTop="@dimen/_10sdp"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:textColor="@color/fade_white"
+            android:text="Title:" />
+        <TextView
+            android:id="@+id/tv_show_details_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/fade_white"
+            android:text="" />
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="14dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_12sdp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/tv_movie_title"
-        app:layout_constraintTop_toBottomOf="@+id/iv_movie_details" />
+    </TableRow>
+    <TableRow
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:textColor="@color/fade_white"
+            android:text="Overview:" />
+        <TextView
+            android:id="@+id/tv_show_details_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/fade_white"
+            android:text="" />
 
-    <TextView
-        android:id="@+id/tv_overview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:text="TextView"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_12sdp"
-        app:layout_constraintStart_toEndOf="@+id/tv_movie_details"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+    </TableRow>
+    <TableRow
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:textColor="@color/fade_white"
+            android:text="Release Date:" />
+        <TextView
+            android:id="@+id/tv_show_details_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:textColor="@color/fade_white"
+            android:text="" />
 
-    <TextView
-        android:id="@+id/tv_release"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_12sdp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/tv_release_date"
-        app:layout_constraintTop_toBottomOf="@+id/tv_overview" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </TableRow>
+    <TableRow
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:textColor="@color/fade_white"
+            android:text="Rating:" />
+        <TextView
+            android:id="@+id/tv_show_details_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/fade_white"
+            android:text="" />
+    </TableRow>
+ </TableLayout>
+</ScrollView>

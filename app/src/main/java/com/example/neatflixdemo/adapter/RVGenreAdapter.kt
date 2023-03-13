@@ -2,15 +2,20 @@ package com.example.neatflixdemo.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentFirstBinding
 import com.example.neatflixdemo.databinding.RowGenreItemBinding
@@ -20,6 +25,7 @@ import com.example.neatflixdemo.services.GetDataService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:LinearLayout,
                      val tabName:String) : RecyclerView.Adapter<RVGenreAdapter.ViewHolder>() {
@@ -104,13 +110,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newTvShowList.add(tvShowList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Top Rated"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newTvShowList)
                 if(newTvShowList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Top Rated", newTvShowList)
                 }
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
@@ -136,13 +137,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newTvShowList.add(tvShowList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Popular"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newTvShowList)
                 if(newTvShowList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Popular", newTvShowList)
                 }
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
@@ -169,13 +165,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newTvShowList.add(tvShowList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Airing Today"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newTvShowList)
                 if(newTvShowList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Tv Airing Today", newTvShowList)
                 }
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
@@ -203,13 +194,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newTvShowList.add(tvShowList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Recommendations"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newTvShowList)
                 if(newTvShowList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Recommendations", newTvShowList)
                 }
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
@@ -229,23 +215,15 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             override fun onResponse(call: Call<PopularMovies?>, response: Response<PopularMovies?>) {
                 val listBody = response.body()
                 val popularMovieList: List<Result> = listBody!!.results
-                var newPopularMoviesList = mutableListOf<Result>()
+                var newMoviesList = mutableListOf<Result>()
                 for(i in popularMovieList.indices){
                     if(popularMovieList[i].genre_ids.contains(genreId)){
-                       newPopularMoviesList.add(popularMovieList[i])
+                        newMoviesList.add(popularMovieList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Popular"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newPopularMoviesList)
-                if(newPopularMoviesList.isNotEmpty()){
-                    layoutList.addView(llView)
+                if(newMoviesList.isNotEmpty()){
+                    addViewToLayoutList("Popular", newMoviesList)
                 }
-
-                //Log.e("RVAddViewAdapter: ","something happened")
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
@@ -270,13 +248,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newMoviesList.add(movieList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Recommendations"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newMoviesList)
                 if(newMoviesList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Recommendations", newMoviesList)
                 }
             }
             override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
@@ -302,13 +275,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newMoviesList.add(movieList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Upcoming Movies"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newMoviesList)
                 if(newMoviesList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Upcoming Movies", newMoviesList)
                 }
             }
             override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
@@ -335,13 +303,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newMoviesList.add(movieList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Top Rated"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newMoviesList)
                 if(newMoviesList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Top Rated", newMoviesList)
                 }
             }
             override fun onFailure(call: Call<TopRated?>, t: Throwable) {
@@ -367,19 +330,32 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                         newMoviesList.add(movieList[i])
                     }
                 }
-                val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
-                val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
-                textView.text = "Now Playing"
-                val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-                setDataToRecyclerView(recyclerView, newMoviesList)
+
                 if(newMoviesList.isNotEmpty()){
-                    layoutList.addView(llView)
+                    addViewToLayoutList("Now Playing", newMoviesList)
                 }
             }
             override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
                 Log.e("FirstFragment: ",t.message.toString())
             }
         })
+    }
+    fun addViewToLayoutList(textString:String, movieList:List<Result>){
+        val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
+        val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
+        textView.text = textString
+        val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
+        setDataToRecyclerView(recyclerView, movieList)
+        layoutList.addView(llView)
+        val nextButton: ImageView = llView.findViewById(R.id.next_btn)
+        nextButton.setOnClickListener{
+            val intent = Intent(_context, ShowCategory::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("category_list", movieList as Serializable)
+            bundle.putString("category_name", textString)
+            intent.putExtras(bundle)
+            _context?.startActivity(intent)
+        }
     }
 
     /** this method accepts the recyclerView of particular View item of layout List and list of results and sets
