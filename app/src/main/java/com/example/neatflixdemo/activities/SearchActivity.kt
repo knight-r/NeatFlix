@@ -25,7 +25,7 @@ import retrofit2.Response
 import java.util.*
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BaseActivity() {
     private lateinit var searchBinding : ActivitySearchBinding
     private lateinit var totalMovieList: List<Result>
     private var totalTvShowList = mutableListOf<Result>()

@@ -12,7 +12,7 @@ import com.example.neatflixdemo.dataclasses.Result
 import com.example.neatflixdemo.databinding.ActivityShowDetailsBinding
 
 @Suppress("DEPRECATION")
-class ShowDetailsActivity : AppCompatActivity() {
+class ShowDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityShowDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

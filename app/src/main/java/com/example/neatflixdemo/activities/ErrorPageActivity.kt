@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
 
-class ErrorPageActivity : AppCompatActivity() {
+class ErrorPageActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_error_page)

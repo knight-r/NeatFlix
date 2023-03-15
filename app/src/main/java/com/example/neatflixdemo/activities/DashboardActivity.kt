@@ -6,15 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.ViewPagerAdapter
+import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityMainBinding
 import com.example.neatflixdemo.fragments.FirstFragment
 import com.example.neatflixdemo.dataclasses.Result
 import com.example.neatflixdemo.fragments.SecondFragment
+import com.example.neatflixdemo.utils.SharedPrefHelper
 import com.google.android.material.tabs.TabLayoutMediator
 import java.io.Serializable
 
 
-class DashboardActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActivity,SecondFragment.SecondFragmentToActivity {
+class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,SecondFragment.SecondFragmentToActivity {
 
     private lateinit var mainBinding : ActivityMainBinding
     private var totalMovieList:List<Result> = emptyList()
@@ -34,6 +36,8 @@ class DashboardActivity : AppCompatActivity(), FirstFragment.FirstFragmentToActi
 //                }
 //            }
 //        }
+
+        checkLoginStatus()
 
         val tabNameList:List<String> = listOf("Movies","TvShows")
 

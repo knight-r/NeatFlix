@@ -18,7 +18,7 @@ class SharedPrefHelper {
         private const val SHARED_PREFERENCE_NAME : String= "SP_NEATFLIX"
         private var mContext: Context? = null
 
-        fun verifyLogin(context: Context, userName: String, password: String) {
+        fun verifyLogin(context: Context, userName: String, password: String): Boolean {
             mContext = context
             var data:String =
                 getSharedPrefObject(context).getString(userName, "").toString()
@@ -27,15 +27,18 @@ class SharedPrefHelper {
                 if (userData.password == password) {
                     Utils.showMessage(context, context.getString(R.string.user_authenticated))
                     // Intent dashboard
+                    return true
                 } else {
                     Utils.showMessage(context, context.getString(R.string.user_not_found))
+                    return false
                 }
             } else {
                 Utils.showMessage(context, context.getString(R.string.user_not_found))
+                return false
             }
         }
 
-        fun getLoginData(context: Context, userName: String, password: String): Users? {
+        fun getLoginData(context: Context, userName: String): Users? {
             mContext = context
             var userData: Users? = null
             var spData:String =
@@ -50,17 +53,22 @@ class SharedPrefHelper {
             return userData
         }
 
-        fun setSignUpData(context: Context, spNeatflix: SharedPreferences, users: Users) {
-            mContext = mContext
+        fun setSignUpData(context: Context, users: Users) {
             val data: String = Gson().toJson(users)
-            getSharedPrefObject(context).edit().putString(users.email, data)
+            val editor = getSharedPrefObject(context).edit()
+            editor.putString(users.name, data)
+            editor?.commit()
+        }
+        fun checkCurrentUserStatus(context: Context):Boolean{
+            return getSharedPrefObject(context).contains("current_user") &&
+                    getSharedPrefObject(context).getBoolean("isLoggedIn", true)
+        }
+         fun getSharedPrefObject(context: Context): SharedPreferences {
+//            if (spNeatflix == null) {
+//                spNeatflix = context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+//            }
+            return context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE)
         }
 
-        fun getSharedPrefObject(context: Context): SharedPreferences {
-            if (spNeatflix == null) {
-                spNeatflix = context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE)
-            }
-            return spNeatflix!!
-        }
     }
 }

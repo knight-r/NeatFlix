@@ -15,7 +15,7 @@ import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.databinding.ActivityShowCategoryBinding
 import com.example.neatflixdemo.dataclasses.Result
 
-class ShowCategory : AppCompatActivity() {
+class ShowCategory : BaseActivity() {
     private lateinit var _binding : ActivityShowCategoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
