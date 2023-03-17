@@ -29,8 +29,8 @@ class ProfileActivity : BaseActivity() {
             userData?.let {
                 _binding.tvProfileName.text = it.name
                 _binding.tvProfileEmail.text = it.dob
-                _binding.tvProfilePhone.text = it.mobileNumber
-                _binding.tvProfileAddress.text = it.address
+                _binding.tvProfilePhone.text = "  ${it.mobileNumber}"
+                _binding.tvProfileAddress.text = "  ${it.address}"
             }
         }
 
@@ -42,6 +42,14 @@ class ProfileActivity : BaseActivity() {
             logout(sp)
             finish()
             startActivity(Intent(this, LoginActivity::class.java))
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (!callingActivity?.className.equals("SignUpActivity")) {
+            checkLoginStatus()
         }
     }
 }

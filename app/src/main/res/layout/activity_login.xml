@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color_app"
     tools:context=".activities.LoginActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/linear_layout_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="@dimen/_150sdp"
+        android:layout_marginTop="@dimen/_100sdp"
         android:orientation="vertical">
 
         <ImageView
@@ -29,48 +32,60 @@
             android:layout_gravity="center"
             />
 
-        <EditText
-            android:id="@+id/et_login_name"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/_10sdp"
             android:layout_height="wrap_content"
-            android:hint=" Username"
-            android:textSize="14dp"
-            android:layout_marginTop="@dimen/_60sdp"
+            app:hintTextColor="@color/fade_white"
             android:textColorHint="@color/fade_white"
-            android:textColor="@color/white"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="10dp"
-            android:padding="10dp"
-            android:autofillHints="yes" />
+            android:layout_marginTop="@dimen/_50sdp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_username"
+                android:hint="Username"
+                android:textColor="@color/white"
+                android:paddingTop="@dimen/_5sdp"
+                android:background="@drawable/round_edge_signup_item"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
 
-        <EditText
-            android:id="@+id/et_login_password"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            app:passwordToggleEnabled="true"
+            app:hintTextColor="@color/fade_white"
+            app:passwordToggleTint="@color/fade_white"
             android:layout_height="wrap_content"
             android:textColorHint="@color/fade_white"
-            android:textColor="@color/white"
-            android:hint="Password"
-            android:textSize="14dp"
-            android:inputType="textPassword"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:autofillHints="yes" />
-
-
+            android:textSize="@dimen/_12sdp"
+            android:layout_marginTop="5dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_password"
+                android:inputType="textPassword"
+                android:hint="Password"
+                android:paddingTop="@dimen/_5sdp"
+                android:background="@drawable/round_edge_signup_item"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_login_login"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_90sdp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="Login"
-            android:background="@color/background_color_secondary_app"
+            android:backgroundTint="@color/background_color_secondary_app"
+            android:background="@drawable/round_corner"
             android:textColor="@color/white"
-            android:gravity="center"
-            android:textSize="16dp"
+            android:textSize="@dimen/_14sdp"
             android:layout_gravity="center"
-            android:padding="@dimen/_4sdp"
+            android:padding="@dimen/_5sdp"
             />
 
     </LinearLayout>
@@ -95,9 +110,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/blue"
-            android:textSize="16dp"
+            android:textSize="@dimen/_14sdp"
             android:text="Sign Up"/>
 
     </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>

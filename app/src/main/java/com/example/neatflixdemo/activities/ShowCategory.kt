@@ -43,4 +43,12 @@ class ShowCategory : BaseActivity() {
 
 
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (!callingActivity?.className.equals("SignUpActivity")) {
+            checkLoginStatus()
+        }
+    }
 }

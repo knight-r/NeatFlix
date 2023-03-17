@@ -1,17 +1,18 @@
 package com.example.neatflixdemo.activities
 
 import android.content.Intent
+import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import android.hardware.biometrics.BiometricPrompt
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.ViewPagerAdapter
-import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityMainBinding
 import com.example.neatflixdemo.fragments.FirstFragment
 import com.example.neatflixdemo.dataclasses.Result
 import com.example.neatflixdemo.fragments.SecondFragment
-import com.example.neatflixdemo.utils.SharedPrefHelper
 import com.google.android.material.tabs.TabLayoutMediator
 import java.io.Serializable
 
@@ -21,23 +22,12 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
     private lateinit var mainBinding : ActivityMainBinding
     private var totalMovieList:List<Result> = emptyList()
     private var totalTvShowList:List<Result> = emptyList()
-    private val checkConnection by lazy { CheckConnection(application) }
+    private lateinit var promptInfo :PromptInfo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         setContentView(mainBinding.root)
-//        mainBinding.apply {
-//            checkConnection.observe(this@MainActivity) {
-//                if (it) {
-//
-//                }else {
-//
-//                }
-//            }
-//        }
-
-        checkLoginStatus()
 
         val tabNameList:List<String> = listOf("Movies","TvShows")
 
@@ -92,5 +82,12 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
             }
         }
         super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!callingActivity?.className.equals("SignUpActivity")) {
+            checkLoginStatus()
+        }
     }
 }

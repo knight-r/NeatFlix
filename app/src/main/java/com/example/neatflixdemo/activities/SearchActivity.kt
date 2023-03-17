@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.text.Html
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,47 +20,52 @@ import com.example.neatflixdemo.databinding.ActivitySearchBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.services.GetDataService
+import org.jetbrains.annotations.Nullable
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
 
-class SearchActivity : BaseActivity() {
+class SearchActivity : BaseActivity(), OnClickListener{
     private lateinit var searchBinding : ActivitySearchBinding
     private lateinit var totalMovieList: List<Result>
-    private var totalTvShowList = mutableListOf<Result>()
-    private var totalList = mutableListOf<Result>()
+    private  var totalTvShowList = mutableListOf<Result>()
+    private  var totalList = mutableListOf<Result>()
     private lateinit var searchRV: RecyclerView
     private lateinit var listAdapter: SearchAdapter
-
+    private var hashMap = HashMap<String,Int>()
     private lateinit var searchView: SearchView
+    private val REQUEST_CODE_SPEECH_INPUT = 1
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
+
         setContentView(searchBinding.root)
         searchRV = searchBinding.rvSearch
         searchView = searchBinding.searchView
         searchView.isIconified = false
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         actionBar?.hide()
 
         val bundle: Bundle? = intent.extras
         totalMovieList = bundle?.getSerializable("movie_list") as List<Result>
         totalTvShowList = (bundle?.getSerializable("tv_show_list") as List<Result>).toMutableList()
 
-        if(totalTvShowList.isEmpty()){
-            getTotalTvShowList()
-        }
-        totalList = totalMovieList as MutableList<Result>
-        for(items in totalTvShowList){
+        for(items in totalMovieList){
             totalList.add(items)
         }
-
+        Log.e("SearchActivity","kuchh to")
+        if(totalTvShowList == emptyList<Result>() || totalTvShowList.size == 0) {
+            getTotalTvShowList()
+        } else {
+            for(items in totalTvShowList) {
+                totalList.add(items)
+            }
+        }
         buildRecyclerView()
-
         searchView.queryHint = Html.fromHtml("<font color = #C7B9B9>" + "Search movies and Tv Shows" + "</font>")
 
         val id = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
@@ -70,8 +76,46 @@ class SearchActivity : BaseActivity() {
         searchBinding.backButton.setOnClickListener{
             finish()
         }
+        searchBinding.ivMicIcon.setOnClickListener{
 
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE,
+                Locale.getDefault()
+            )
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speak_to_text))
 
+            try {
+                startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
+            } catch (e: Exception) {
+                Toast.makeText(
+                        this@SearchActivity, getString(R.string.some_error_occured) + e.message,
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+            }
+        }
+
+    }
+    override fun onActivityResult(
+        requestCode: Int, resultCode: Int,
+        @Nullable data: Intent?,
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && data != null) {
+                val result = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS
+                )
+                result?.let {
+                    searchView.setQuery(it[0].toString(), true)
+                }
+            }
+        }
     }
     private fun queryOnInput(){
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -201,8 +245,22 @@ class SearchActivity : BaseActivity() {
     }
     fun addTotalTvShowList(tvList:List<Result>){
         for(items in tvList){
-            totalTvShowList.add(items)
+            if(!hashMap.contains(items.name)){
+                hashMap[items.name] = 1
+                totalList.add(items)
+            }
         }
+
+    }
+    override fun onResume() {
+        super.onResume()
+        if (!callingActivity?.className.equals("SignUpActivity")) {
+            checkLoginStatus()
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        TODO("Not yet implemented")
     }
 }
 

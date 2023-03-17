@@ -1,5 +1,6 @@
 package com.example.neatflixdemo.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -36,6 +37,19 @@ class ShowDetailsActivity : BaseActivity() {
             tvShowDetailsReleaseDate.text = resultData.release_date
             tvShowDetailsRating.text = resultData.vote_average.toString()
         }
+        binding.ivYoutubeVideo.setOnClickListener{
+            val intent = Intent(this, VideoPlayerActivity::class.java)
+//            var bundle = Bundle()
+//            bundle.putString("movie_id",resultData.id.toString())
+            startActivity(intent)
 
+        }
+
+    }
+    override fun onResume() {
+        super.onResume()
+        if (!callingActivity?.className.equals("SignUpActivity")) {
+            checkLoginStatus()
+        }
     }
 }

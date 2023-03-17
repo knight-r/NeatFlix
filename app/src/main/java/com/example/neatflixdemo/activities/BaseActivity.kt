@@ -13,23 +13,17 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
     }
-
-    override fun onResume() {
-        super.onResume()
-        checkLoginStatus()
-    }
-
     fun checkLoginStatus() {
         var sp = SharedPrefHelper.getSharedPrefObject(applicationContext)
         if (!sp.getBoolean(Constants.KEY_IS_LOGGED_IN, false)) {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
-
     fun logout(sp: SharedPreferences) {
         val spEdit = sp.edit()
         spEdit.putBoolean(Constants.KEY_IS_LOGGED_IN, false)
         spEdit.putString(Constants.KEY_CURRENT_USER, "")
         spEdit.commit()
     }
+
 }

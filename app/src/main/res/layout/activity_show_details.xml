@@ -1,86 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color_app"
-    tools:context=".activities.ShowDetailsActivity" >
- <TableLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/iv_movie_details"
+    tools:context=".activities.ShowDetailsActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TableRow
-        android:layout_marginTop="@dimen/_10sdp"
-        android:padding="5dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:textColor="@color/fade_white"
-            android:text="Title:" />
-        <TextView
-            android:id="@+id/tv_show_details_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/fade_white"
-            android:text="" />
+        android:layout_height="wrap_content"
+        >
 
-    </TableRow>
-    <TableRow
-        android:padding="5dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:textColor="@color/fade_white"
-            android:text="Overview:" />
-        <TextView
-            android:id="@+id/tv_show_details_overview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/fade_white"
-            android:text="" />
+        <TableLayout
+            android:id="@+id/table_layout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/iv_movie_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    </TableRow>
-    <TableRow
-        android:padding="5dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:textColor="@color/fade_white"
-            android:text="Release Date:" />
-        <TextView
-            android:id="@+id/tv_show_details_release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:layout_weight="1"
-            android:textColor="@color/fade_white"
-            android:text="" />
+            <ImageView
+                android:id="@+id/iv_youtube_video"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/_80sdp"
+                android:background="@drawable/youtube_image"
+                />
+            <TableRow
+                android:layout_marginTop="@dimen/_10sdp"
+                android:padding="@dimen/_5sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:textColor="@color/fade_white"
+                    android:text="Title:" />
+                <TextView
+                    android:id="@+id/tv_show_details_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/fade_white"
+                    android:text="" />
 
-    </TableRow>
-    <TableRow
-        android:padding="5dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:textColor="@color/fade_white"
-            android:text="Rating:" />
-        <TextView
-            android:id="@+id/tv_show_details_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/fade_white"
-            android:text="" />
-    </TableRow>
- </TableLayout>
+            </TableRow>
+            <TableRow
+                android:padding="@dimen/_5sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:textColor="@color/fade_white"
+                    android:text="Overview:" />
+                <TextView
+                    android:id="@+id/tv_show_details_overview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/fade_white"
+                    android:text="" />
+
+            </TableRow>
+            <TableRow
+                android:padding="@dimen/_5sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:textColor="@color/fade_white"
+                    android:text="Release Date:" />
+                <TextView
+                    android:id="@+id/tv_show_details_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:textColor="@color/fade_white"
+                    android:text="" />
+
+            </TableRow>
+            <TableRow
+                android:padding="@dimen/_5sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:textColor="@color/fade_white"
+                    android:text="Rating:" />
+                <TextView
+                    android:id="@+id/tv_show_details_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/fade_white"
+                    android:text="" />
+            </TableRow>
+        </TableLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -3,6 +3,7 @@ package com.example.neatflixdemo.services
 import com.example.neatflixdemo.dataclasses.*
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GetDataService {
@@ -54,6 +55,13 @@ interface GetDataService {
     @GET("3/tv/airing_today?")
     fun getRecommendedTvShows(@Query("api_key") api_key:String,
                          @Query("language") language:String):Call<RecommendedTvShows>
+
+    @GET("3/movie/{movie_id}/videos?")
+    fun getMovieObject(
+        @Path("movie_id") movieId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language:String
+    ): Call<MovieObject>
 
 
 

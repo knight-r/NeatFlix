@@ -28,7 +28,7 @@ class LoginActivity : BaseActivity() {
         }
 
         _binding.btnLoginLogin.setOnClickListener {
-            val userName:String = _binding.etLoginName.text.toString().toLowerCase()
+            val userName:String = _binding.etLoginUsername.text.toString().toLowerCase()
             val userPassword:String = _binding.etLoginPassword.text.toString()
             if(userName == "" || userPassword == "") {
                 Utils.showMessage(this, "Username or Password is empty.")
