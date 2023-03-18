@@ -50,6 +50,37 @@ class SearchActivity : BaseActivity(), OnClickListener{
 
         actionBar?.hide()
 
+        /**
+         *  this method  get total movies list and shows list in single search list
+         */
+        getTotalSearchList()
+
+        /**
+         *  this method sets search list objects in RecyclerView
+         */
+        buildRecyclerView()
+        searchView.queryHint = Html.fromHtml("<font color = #C7B9B9>" + "Search movies and Tv Shows" + "</font>")
+
+        /**
+         * this method is used to customize the UI of SearchView
+         */
+        manageSearchViewUI()
+
+        /**
+         * this method filters the list of recyclerView based on text entered
+         */
+        queryOnInput()
+
+        searchBinding.backButton.setOnClickListener {
+            finish()
+        }
+        searchBinding.ivMicIcon.setOnClickListener {
+            enableVoiceSearch()
+        }
+
+    }
+
+    private fun getTotalSearchList() {
         val bundle: Bundle? = intent.extras
         totalMovieList = bundle?.getSerializable("movie_list") as List<Result>
         totalTvShowList = (bundle?.getSerializable("tv_show_list") as List<Result>).toMutableList()
@@ -57,7 +88,6 @@ class SearchActivity : BaseActivity(), OnClickListener{
         for(items in totalMovieList){
             totalList.add(items)
         }
-        Log.e("SearchActivity","kuchh to")
         if(totalTvShowList == emptyList<Result>() || totalTvShowList.size == 0) {
             getTotalTvShowList()
         } else {
@@ -65,42 +95,51 @@ class SearchActivity : BaseActivity(), OnClickListener{
                 totalList.add(items)
             }
         }
-        buildRecyclerView()
-        searchView.queryHint = Html.fromHtml("<font color = #C7B9B9>" + "Search movies and Tv Shows" + "</font>")
-
-        val id = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
-        val textView = searchView.findViewById<View>(id) as TextView
-        textView.setTextColor(Color.WHITE)
-
-        queryOnInput()
-        searchBinding.backButton.setOnClickListener{
-            finish()
-        }
-        searchBinding.ivMicIcon.setOnClickListener{
-
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            intent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE,
-                Locale.getDefault()
-            )
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speak_to_text))
-
-            try {
-                startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
-            } catch (e: Exception) {
-                Toast.makeText(
-                        this@SearchActivity, getString(R.string.some_error_occured) + e.message,
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
-            }
-        }
-
     }
+
+    @SuppressLint("ResourceAsColor")
+    private fun manageSearchViewUI() {
+        val idTextView = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+        val textView = searchView.findViewById<View>(idTextView) as TextView
+        textView.setTextColor(Color.WHITE)
+        val idCloseButton = searchView.context.resources.getIdentifier("android:id/search_close_btn", null, null)
+        val closeButton:ImageView = searchView.findViewById<View>(idCloseButton) as ImageView
+        closeButton.setOnClickListener {
+            val idCloseButton = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+            val et:EditText = searchView.findViewById<View>(idCloseButton) as EditText
+            et.setText("")
+        }
+        val idBaseLine = searchView.context.resources.getIdentifier("android:id/search_plate", null, null)
+        val searchPlate = searchView.findViewById<View>(idBaseLine)
+        searchPlate.setBackgroundColor(R.color.white)
+    }
+
+    private fun enableVoiceSearch() {
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            Locale.getDefault()
+        )
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speak_to_text))
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this@SearchActivity, getString(R.string.some_error_occured) + e.message,
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+    }
+
+
+
     override fun onActivityResult(
         requestCode: Int, resultCode: Int,
         @Nullable data: Intent?,

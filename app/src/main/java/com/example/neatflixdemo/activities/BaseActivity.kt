@@ -9,13 +9,14 @@ import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.utils.SharedPrefHelper
 
 open class BaseActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
     }
     fun checkLoginStatus() {
-        var sp = SharedPrefHelper.getSharedPrefObject(applicationContext)
-        if (!sp.getBoolean(Constants.KEY_IS_LOGGED_IN, false)) {
+        val sp = SharedPrefHelper.getSharedPrefObject(applicationContext)
+        if(!sp.getBoolean(Constants.KEY_IS_LOGGED_IN, false)){
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
@@ -25,5 +26,6 @@ open class BaseActivity : AppCompatActivity() {
         spEdit.putString(Constants.KEY_CURRENT_USER, "")
         spEdit.commit()
     }
+
 
 }

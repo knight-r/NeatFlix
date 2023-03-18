@@ -91,6 +91,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear_layout_1"
@@ -113,7 +114,17 @@
             android:textSize="@dimen/_14sdp"
             android:text="Sign Up"/>
 
+
     </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_finger_print"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_below="@+id/ll2"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_fingerprint"
+            />
     </RelativeLayout>
 
 </ScrollView>

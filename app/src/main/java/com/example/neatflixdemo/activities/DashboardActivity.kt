@@ -73,7 +73,7 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
     }
 
     /**
-     * OnBackpressed method is overridden from Activity class, Here we are handling back button click while being on user page.
+     * onBackPressed method is overridden from Activity class, Here we are handling back button click while being on user page.
      * */
     override fun onBackPressed() {
         mainBinding.viewPager.let {
