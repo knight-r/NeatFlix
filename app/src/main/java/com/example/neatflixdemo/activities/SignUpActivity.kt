@@ -13,49 +13,50 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class SignUpActivity : BaseActivity() {
-    private lateinit var _binding:ActivitySignUpBinding
+    private lateinit var signupBinding:ActivitySignUpBinding
+    private val countryCode:String = "+91 "
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivitySignUpBinding.inflate(layoutInflater)
+        signupBinding = ActivitySignUpBinding.inflate(layoutInflater)
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
-        setContentView(_binding.root)
+        setContentView(signupBinding.root)
 
-        _binding.tvRegLogin.setOnClickListener {
+        signupBinding.tvRegLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
         chooseDate()
-        _binding.btnRegRegister.setOnClickListener{
+        signupBinding.btnRegRegister.setOnClickListener{
 
-                if(validCredentials(_binding.etRegUsername.text.toString() ,
-                        _binding.etRegPassword.text.toString(),
-                        _binding.etRegConfirmPassword.text.toString(),
-                        _binding.etRegAddress.text.toString(),
-                        _binding.etRegPhone.text.toString(),_binding.tvRegDob.text.toString())) {
+                if(validCredentials(signupBinding.etRegUsername.text.toString() ,
+                        signupBinding.etRegPassword.text.toString(),
+                        signupBinding.etRegConfirmPassword.text.toString(),
+                        signupBinding.etRegAddress.text.toString(),
+                        signupBinding.etRegPhone.text.toString(),signupBinding.tvRegDob.text.toString())) {
 
-                    if(SharedPrefHelper.getSharedPrefObject(this).contains(_binding.etRegUsername.text.toString())){
-                        _binding.etRegUsername.error = "user already exists!"
+                    if(SharedPrefHelper.getSharedPrefObject(this).contains(signupBinding.etRegUsername.text.toString())){
+                        signupBinding.etRegUsername.error = getString(R.string.user_already_exists)
                     }else{
-                        val newUser = Users(_binding.etRegUsername.text.toString().toLowerCase() ,
-                            "+91 " +_binding.etRegPhone.text.toString(),
-                            _binding.tvRegDob.text.toString(),
-                            _binding.etRegAddress.text.toString(),
-                            _binding.etRegPassword.text.toString())
+                        val newUser = Users(signupBinding.etRegUsername.text.toString().toLowerCase() ,
+                            countryCode + signupBinding.etRegPhone.text.toString(),
+                            signupBinding.tvRegDob.text.toString(),
+                            signupBinding.etRegAddress.text.toString(),
+                            signupBinding.etRegPassword.text.toString())
                         SharedPrefHelper.setSignUpData(this , newUser)
-                        Utils.showMessage(this, "Signup successful")
+                        Utils.showMessage(this, getString(R.string.signup_successful))
                         startActivity(Intent(this, LoginActivity::class.java))
                     }
 
                 }else {
-                    Utils.showMessage(this, "Enter valid credentials")
+                    Utils.showMessage(this, getString(R.string.enter_valid_data))
                 }
         }
 
 
     }
     private fun chooseDate(){
-         _binding.tvRegDob.setOnClickListener {
-             val c = Calendar.getInstance()
-             val format = SimpleDateFormat("dd-MMM-YYYY")
+         signupBinding.tvRegDob.setOnClickListener {
+             var c = Calendar.getInstance()
+             val format = SimpleDateFormat("dd-MM-YYYY")
 
              val year = c.get(Calendar.YEAR)
              val month = c.get(Calendar.MONTH)
@@ -64,12 +65,13 @@ class SignUpActivity : BaseActivity() {
                  this,
                  { view , year, monthOfYear, dayOfMonth ->
                      c.set(year, monthOfYear, dayOfMonth)
-                     _binding.tvRegDob.text = format.format(c.time)
+                     signupBinding.tvRegDob.text = format.format(c.time)
                  },
                  year,
                  month,
                  day
              )
+             datePickerDialog.datePicker.maxDate = c.timeInMillis
              datePickerDialog.show()
          }
      }
@@ -87,7 +89,7 @@ class SignUpActivity : BaseActivity() {
 
             return false
         } else if (password != resetPassword) {
-            _binding.etRegConfirmPassword?.error = "password do not match"
+            signupBinding.etRegConfirmPassword?.error = getString(R.string.password_donot_match)
             return false
         }else if(!validPhoneNumber(phoneNumber)){
             return false

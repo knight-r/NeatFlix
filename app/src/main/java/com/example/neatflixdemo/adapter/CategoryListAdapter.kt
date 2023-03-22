@@ -30,6 +30,7 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
            holder.apply {
                imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                    crossfade(true)
+                   placeholder(R.drawable.ic_launcher_background)
                }
                model.name?.let {
                    nameTV.text = model.name

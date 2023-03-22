@@ -1,6 +1,5 @@
 package com.example.neatflixdemo.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -37,7 +36,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
     private var hashMap = HashMap<String,Int>()
     private lateinit var searchView: SearchView
     private val REQUEST_CODE_SPEECH_INPUT = 1
-    @SuppressLint("ResourceAsColor")
+    private val TAG:String = "SearchActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
@@ -82,8 +81,8 @@ class SearchActivity : BaseActivity(), OnClickListener{
 
     private fun getTotalSearchList() {
         val bundle: Bundle? = intent.extras
-        totalMovieList = bundle?.getSerializable("movie_list") as List<Result>
-        totalTvShowList = (bundle?.getSerializable("tv_show_list") as List<Result>).toMutableList()
+        totalMovieList = bundle?.getSerializable(Constants.KEY_MOVIE_LIST) as List<Result>
+        totalTvShowList = (bundle?.getSerializable(Constants.KEY_TVSHOW_LIST) as List<Result>).toMutableList()
 
         for(items in totalMovieList){
             totalList.add(items)
@@ -97,7 +96,6 @@ class SearchActivity : BaseActivity(), OnClickListener{
         }
     }
 
-    @SuppressLint("ResourceAsColor")
     private fun manageSearchViewUI() {
         val idTextView = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
         val textView = searchView.findViewById<View>(idTextView) as TextView
@@ -109,9 +107,6 @@ class SearchActivity : BaseActivity(), OnClickListener{
             val et:EditText = searchView.findViewById<View>(idCloseButton) as EditText
             et.setText("")
         }
-        val idBaseLine = searchView.context.resources.getIdentifier("android:id/search_plate", null, null)
-        val searchPlate = searchView.findViewById<View>(idBaseLine)
-        searchPlate.setBackgroundColor(R.color.white)
     }
 
     private fun enableVoiceSearch() {
@@ -216,7 +211,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
                 startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e("SearchActivity: ",t.message.toString())
+                Log.e(TAG,t.message.toString())
             }
         })
     }
@@ -236,7 +231,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
                 startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e("SearchActivity ",t.message.toString())
+                Log.e(TAG ,t.message.toString())
             }
         })
 
@@ -257,7 +252,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
                 startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e("SearchActivity ",t.message.toString())
+                Log.e(TAG,t.message.toString())
             }
         })
 
@@ -278,7 +273,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
                 startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e("SearchActivity ",t.message.toString())
+                Log.e(TAG,t.message.toString())
             }
         })
     }

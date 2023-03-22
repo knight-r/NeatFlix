@@ -12,7 +12,6 @@ import com.example.neatflixdemo.dataclasses.Result
 
 import com.example.neatflixdemo.databinding.ActivityShowDetailsBinding
 
-@Suppress("DEPRECATION")
 class ShowDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityShowDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +20,7 @@ class ShowDetailsActivity : BaseActivity() {
         setContentView(binding.root)
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         val bundle = intent?.extras
-        val resultData = bundle?.getSerializable("result_data") as Result
+        val resultData = bundle?.getSerializable(getString(R.string.result_data)) as Result
         binding.apply {
             ivMovieDetails.load(Constants.API_TMDB_IMAGE_BASE_URL + resultData.poster_path) {
                 crossfade(true)
@@ -39,8 +38,6 @@ class ShowDetailsActivity : BaseActivity() {
         }
         binding.ivYoutubeVideo.setOnClickListener{
             val intent = Intent(this, VideoPlayerActivity::class.java)
-//            var bundle = Bundle()
-//            bundle.putString("movie_id",resultData.id.toString())
             startActivity(intent)
 
         }

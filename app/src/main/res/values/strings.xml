@@ -6,4 +6,27 @@
     <string name="user_not_found">User not found</string>
     <string name="some_error_occured">Some error occurred</string>
     <string name="speak_to_text">Speak to text</string>
+    <string name="device_doesnot_support_fingerprint">Device doesn\'t support fingerprint</string>
+    <string name="biometric_sensor_unavailable">The biometric sensor is unavailable</string>
+    <string name="enable_fingerprint_in_setting">Enable fingerprint in your setting</string>
+    <string name="please_login_first">Please login first</string>
+    <string name="username_or_password_empty">Username or Password is empty</string>
+    <string name="please_verify_your_biometric">PLease verify your biometric</string>
+    <string name="result_data">result_data</string>
+    <string name="key_category_list">category_list</string>
+    <string name="key_category_name">category_name</string>
+    <string name="signup_activity">SignUpActivity</string>
+    <string name="popular">Popular</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="tv_airing_today">Tv Airing Today</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="upcoming_movies">Upcoming Movies</string>
+    <string name="main_activity">MainActivity</string>
+    <string name="first_fragment">FirstFragment</string>
+    <string name="second_fragment">SecondFragment</string>
+    <string name="enter_valid_data">Enter valid data</string>
+    <string name="user_already_exists">user already exists!</string>
+    <string name="signup_successful">Signup successful</string>
+    <string name="password_donot_match">password do not match</string>
 </resources>

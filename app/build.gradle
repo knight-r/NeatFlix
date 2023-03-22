@@ -63,6 +63,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.4'
 
     implementation 'androidx.biometric:biometric:1.0.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
 
 
 }

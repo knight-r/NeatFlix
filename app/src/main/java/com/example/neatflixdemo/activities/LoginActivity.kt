@@ -40,7 +40,7 @@ class LoginActivity : BaseActivity() {
             if(SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
                 enableBiometricCheck()
             }else {
-                Utils.showMessage(this, "Please login first")
+                Utils.showMessage(this, getString(R.string.please_login_first))
             }
         }
 
@@ -51,24 +51,23 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
     private fun enableBiometricCheck() {
         if (biometricManager == null) {
             biometricManager = BiometricManager.from(this)
         }
         when (biometricManager?.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                Utils.showMessage(this,"Use fingerprint to login")
+
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Utils.showMessage(this,"Device doesn't support fingerprint")
+                Utils.showMessage(this,getString(R.string.device_doesnot_support_fingerprint))
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                Utils.showMessage(this,"The biometric sensor is unavailable")
+                Utils.showMessage(this,getString(R.string.biometric_sensor_unavailable))
 
             }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Utils.showMessage(this , "Enable fingerprint in your setting")
+                Utils.showMessage(this , getString(R.string.enable_fingerprint_in_setting))
             }
         }
         executor = ContextCompat.getMainExecutor(applicationContext)
@@ -88,7 +87,6 @@ class LoginActivity : BaseActivity() {
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Utils.showMessage(applicationContext, "Authentication succeeded!")
                     startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
 
                 }
@@ -118,7 +116,7 @@ class LoginActivity : BaseActivity() {
         val userName:String = loginBinding.etLoginUsername.text.toString().toLowerCase()
         val userPassword:String = loginBinding.etLoginPassword.text.toString()
         if(userName == "" || userPassword == "") {
-            Utils.showMessage(this, "Username or Password is empty.")
+            Utils.showMessage(this, getString(R.string.username_or_password_empty))
         } else if(SharedPrefHelper.verifyLogin(applicationContext, userName, userPassword)){
             sharedPreferenceEditor.putString(Constants.KEY_CURRENT_USER,userName)
             sharedPreferenceEditor.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
@@ -130,10 +128,10 @@ class LoginActivity : BaseActivity() {
             if( count > 3) {
                 startActivity(Intent(this, DashboardActivity::class.java))
             }else{
-                Utils.showMessage(this, "PLease verify your biometric")
+                Utils.showMessage(this, getString(R.string.please_verify_your_biometric))
             }
         } else {
-            Utils.showMessage(this, "Wrong credentials")
+            Utils.showMessage(this, getString(R.string.user_not_found))
         }
     }
 }

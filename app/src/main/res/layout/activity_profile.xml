@@ -123,7 +123,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="Logout"
-        android:background="@drawable/round_corner"
         android:backgroundTint="@color/background_color_secondary_app"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

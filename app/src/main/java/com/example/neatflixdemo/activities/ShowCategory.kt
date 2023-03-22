@@ -24,8 +24,8 @@ class ShowCategory : BaseActivity() {
         setContentView(_binding.root)
 
         val bundle: Bundle? = intent.extras
-        val list :List<Result> = bundle?.getSerializable("category_list") as List<Result>
-        val categoryName:String = bundle?.getString("category_name") as String
+        val list :List<Result> = bundle?.getSerializable(getString(R.string.key_category_list)) as List<Result>
+        val categoryName:String = bundle?.getString(getString(R.string.key_category_name)) as String
         val recyclerView:RecyclerView = _binding.rvShowCategory
         _binding.tvCategoryName.text = "$categoryName List"
         setDataToRecyclerView(recyclerView,list)
@@ -47,7 +47,7 @@ class ShowCategory : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!callingActivity?.className.equals("SignUpActivity")) {
+        if (!callingActivity?.className.equals(getString(R.string.signup_activity))) {
             checkLoginStatus()
         }
     }

@@ -28,14 +28,14 @@ import retrofit2.Response
 import java.io.Serializable
 
 class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:LinearLayout,
-                     val tabName:String) : RecyclerView.Adapter<RVGenreAdapter.ViewHolder>() {
+                     val mTabName:String) : RecyclerView.Adapter<RVGenreAdapter.ViewHolder>() {
     private var _context: Context? = null
     private lateinit var _binding: RowGenreItemBinding
     private lateinit var firstFragmentBinding: FragmentFirstBinding
     private   var selectedPosition:Int=0
     private var genreId:Int = genreList[0].id
     private lateinit var layout_list:LinearLayout
-
+    private val tabName:String = "Movies"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         _context = parent.context
         layout_list = this.layoutList
@@ -45,7 +45,6 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_genre_item, parent, false)
         return ViewHolder(view)
     }
-    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         holder.textViewGenre.text = genreList[position].name
@@ -54,7 +53,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             genreId = genreList[position].id
             selectedPosition = position
             layout_list.removeAllViewsInLayout()
-            if(tabName == "Movies"){
+            if(mTabName == tabName){
                 addViewInMovies()
             }else{
                 addViewInTvShows()
@@ -99,7 +98,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getTopRatedTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getTopRatedTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<TopRatedTvShows?> {
             override fun onResponse(call: Call<TopRatedTvShows?>, response: Response<TopRatedTvShows?>) {
                 val listBody = response.body()
@@ -111,11 +110,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList("Top Rated", newTvShowList)
+                    addViewToLayoutList(_context!!.getString(R.string.top_rated) , newTvShowList)
                 }
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
-                Log.e("SecondFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
             }
         })
     }
@@ -126,7 +125,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getPopularTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getPopularTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<PopularTvShows?> {
             override fun onResponse(call: Call<PopularTvShows?>, response: Response<PopularTvShows?>) {
                 val listBody = response.body()
@@ -138,11 +137,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList("Popular", newTvShowList)
+                    addViewToLayoutList(_context!!.getString(R.string.popular), newTvShowList)
                 }
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
-                Log.e("SecondFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
             }
         })
 
@@ -154,7 +153,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getTvAiringToday(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getTvAiringToday(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<TvAiringToday?> {
             override fun onResponse(call: Call<TvAiringToday?>, response: Response<TvAiringToday?>) {
                 val listBody = response.body()
@@ -166,11 +165,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList("Tv Airing Today", newTvShowList)
+                    addViewToLayoutList(_context!!.getString(R.string.tv_airing_today), newTvShowList)
                 }
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
-                Log.e("Adapter: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
             }
         })
 
@@ -182,7 +181,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getRecommendedTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getRecommendedTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<RecommendedTvShows?> {
             override fun onResponse(call: Call<RecommendedTvShows?>, response: Response<RecommendedTvShows?>) {
                 val listBody = response.body()
@@ -195,11 +194,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList("Recommendations", newTvShowList)
+                    addViewToLayoutList(_context!!.getString(R.string.recommendations), newTvShowList)
                 }
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
-                Log.e("SecondFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
             }
         })
     }
@@ -210,7 +209,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getPopularMovies(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getPopularMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<PopularMovies?> {
             override fun onResponse(call: Call<PopularMovies?>, response: Response<PopularMovies?>) {
                 val listBody = response.body()
@@ -222,11 +221,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList("Popular", newMoviesList)
+                    addViewToLayoutList(_context!!.getString(R.string.popular), newMoviesList)
                 }
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
-                Log.e("FirstFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
@@ -237,7 +236,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getRecommendedMovies(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getRecommendedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<Recommendations?> {
             override fun onResponse(call: Call<Recommendations?>, response: Response<Recommendations?>) {
                 val listBody = response.body()
@@ -249,12 +248,12 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList("Recommendations", newMoviesList)
+                    addViewToLayoutList(_context!!.getString(R.string.recommendations), newMoviesList)
                 }
             }
             override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
-                Log.e("FirstFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
@@ -265,7 +264,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getUpComingMovies(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getUpComingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<Upcoming?> {
             override fun onResponse(call: Call<Upcoming?>, response: Response<Upcoming?>) {
                 val listBody = response.body()
@@ -277,12 +276,12 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList("Upcoming Movies", newMoviesList)
+                    addViewToLayoutList(_context!!.getString(R.string.upcoming_movies), newMoviesList)
                 }
             }
             override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
-                Log.e("FirstFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
@@ -294,7 +293,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getTopRatedMovies(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getTopRatedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<TopRated?> {
             override fun onResponse(call: Call<TopRated?>, response: Response<TopRated?>) {
                 val listBody = response.body()
@@ -306,12 +305,12 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                     }
                 }
                 if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList("Top Rated", newMoviesList)
+                    addViewToLayoutList(_context!!.getString(R.string.top_rated), newMoviesList)
                 }
             }
             override fun onFailure(call: Call<TopRated?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
-                Log.e("FirstFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
@@ -322,7 +321,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
-        dataService?.getNowPlayingMovies(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
+        dataService?.getNowPlayingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<NowPlaying?> {
             override fun onResponse(call: Call<NowPlaying?>, response: Response<NowPlaying?>) {
                 val listBody = response.body()
@@ -335,12 +334,12 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                 }
 
                 if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList("Now Playing", newMoviesList)
+                    addViewToLayoutList(_context!!.getString(R.string.now_playing), newMoviesList)
                 }
             }
             override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
-                Log.e("FirstFragment: ",t.message.toString())
+                Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
@@ -355,8 +354,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         nextButton.setOnClickListener{
             val intent = Intent(_context, ShowCategory::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("category_list", movieList as Serializable)
-            bundle.putString("category_name", textString)
+            bundle.putSerializable(_context!!.getString(R.string.key_category_list), movieList as Serializable)
+            bundle.putString(_context!!.getString(R.string.key_category_name), textString)
             intent.putExtras(bundle)
             _context?.startActivity(intent)
         }

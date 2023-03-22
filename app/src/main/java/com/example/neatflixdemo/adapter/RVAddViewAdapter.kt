@@ -13,7 +13,6 @@ import com.example.neatflixdemo.activities.ShowDetailsActivity
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.dataclasses.Result
 import java.io.Serializable
-
 class RVAddViewAdapter(private val mList:List<Result>): RecyclerView.Adapter<RVAddViewAdapter.ViewHolder>() {
    private lateinit var _context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,12 +25,13 @@ class RVAddViewAdapter(private val mList:List<Result>): RecyclerView.Adapter<RVA
         val model: Result = mList[position]
         holder.imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
             crossfade(true)
+            placeholder(R.drawable.ic_launcher_background)
         }
 
        holder.itemView.setOnClickListener{
            val intent = Intent(_context, ShowDetailsActivity::class.java)
            val bundle = Bundle()
-           bundle.putSerializable("result_data", model as Serializable)
+           bundle.putSerializable(_context.getString(R.string.result_data), model as Serializable)
            intent.putExtras(bundle)
            _context.startActivity(intent)
        }

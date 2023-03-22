@@ -9,6 +9,7 @@ import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.ViewPagerAdapter
+import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityMainBinding
 import com.example.neatflixdemo.fragments.FirstFragment
 import com.example.neatflixdemo.dataclasses.Result
@@ -36,8 +37,8 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
         mainBinding.ivSearchIcon.setOnClickListener{
             var intent = Intent(this, SearchActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("movie_list", totalMovieList as Serializable)
-            bundle.putSerializable("tv_show_list", totalTvShowList as Serializable)
+            bundle.putSerializable(Constants.KEY_MOVIE_LIST, totalMovieList as Serializable)
+            bundle.putSerializable(Constants.KEY_TVSHOW_LIST, totalTvShowList as Serializable)
             intent.putExtras(bundle)
             startActivity(intent)
         }
