@@ -22,6 +22,7 @@ class LoginActivity : BaseActivity() {
     private var fingerVerified = false
     private var count: Int = 0
     private var biometricManager: BiometricManager? = null
+    private var flag = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
@@ -48,10 +49,14 @@ class LoginActivity : BaseActivity() {
     private fun checkUserLoggedIn() {
         if(SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
             enableBiometricCheck()
+            if(flag){
+                startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
+            }
         }
     }
 
     private fun enableBiometricCheck() {
+
         if (biometricManager == null) {
             biometricManager = BiometricManager.from(this)
         }
@@ -60,13 +65,16 @@ class LoginActivity : BaseActivity() {
 
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+               flag = true
                 Utils.showMessage(this,getString(R.string.device_doesnot_support_fingerprint))
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                flag = true
                 Utils.showMessage(this,getString(R.string.biometric_sensor_unavailable))
 
             }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                flag = true
                 Utils.showMessage(this , getString(R.string.enable_fingerprint_in_setting))
             }
         }
@@ -101,6 +109,7 @@ class LoginActivity : BaseActivity() {
                     }
                 }
             })
+
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Fingerprint Login for Neatflix")
             .setSubtitle("Log in using your biometric credential")

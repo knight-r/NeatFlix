@@ -3,6 +3,7 @@ package com.example.neatflixdemo.adapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,14 +51,13 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
             model.name?.let {
                 titleTV.text = model.name
             }
-
             ratingBar.rating = model.vote_average.toFloat() / 2
 
         }
         holder.itemView.setOnClickListener{
             val intent = Intent(_context, ShowDetailsActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("result_data", model as Serializable)
+            bundle.putSerializable(_context.getString(R.string.result_data), model as Serializable)
 
             intent.putExtras(bundle)
             _context.startActivity(intent)
@@ -66,8 +66,8 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
     }
 
     override fun getItemCount(): Int {
-        // returning the size of array list.
-        return mList.size
+
+        return mList.size  // returning the size of array list.
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
