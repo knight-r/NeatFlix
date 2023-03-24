@@ -19,7 +19,6 @@ class LoginActivity : BaseActivity() {
     private lateinit var loginBinding :ActivityLoginBinding
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
-    private var fingerVerified = false
     private var count: Int = 0
     private var biometricManager: BiometricManager? = null
     private var flag = false
@@ -55,6 +54,7 @@ class LoginActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun enableBiometricCheck() {
 
         if (biometricManager == null) {
@@ -122,7 +122,7 @@ class LoginActivity : BaseActivity() {
 
     private fun loginUser(){
         val sharedPreferenceEditor = SharedPrefHelper.getSharedPrefObject(this).edit()
-        val userName:String = loginBinding.etLoginUsername.text.toString().toLowerCase()
+        val userName:String = toLowerCase(loginBinding.etLoginUsername.text.toString())
         val userPassword:String = loginBinding.etLoginPassword.text.toString()
         if(userName == "" || userPassword == "") {
             Utils.showMessage(this, getString(R.string.username_or_password_empty))
@@ -142,5 +142,18 @@ class LoginActivity : BaseActivity() {
         } else {
             Utils.showMessage(this, getString(R.string.user_not_found))
         }
+    }
+    private fun toLowerCase(str: String): String {
+        var resultString = ""
+        for(character in str){
+            if(character in 'A'..'Z'){
+                val charValue = character.code
+                resultString.plus((charValue + 32).toChar())
+
+            }else{
+                resultString.plus(character)
+            }
+        }
+        return resultString
     }
 }
