@@ -10,7 +10,7 @@ class Constants {
          const val KEY_CURRENT_USER : String = "KEY_CURRENT_USER"
          const val KEY_MOVIE_LIST : String = "KEY_MOVIE_LIST"
          const val KEY_TVSHOW_LIST : String = "KEY_TVSHOW_LIST"
-
-
+         const val VIDEO_URL : String = "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
+         const val KEY_SP: String = "SP_NEATFLIX"
     }
 }

@@ -19,7 +19,7 @@ import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.adapter.RVGenreAdapter
 import com.example.neatflixdemo.constants.Constants
-import com.example.neatflixdemo.databinding.FragmentFirstBinding
+import com.example.neatflixdemo.databinding.FragmentMoviesBinding
 import com.example.neatflixdemo.databinding.RowAddItemBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.network.RetrofitClient
@@ -30,8 +30,8 @@ import retrofit2.Response
 import java.io.Serializable
 
 
-class FirstFragment : Fragment() {
-    private  var _binding:FragmentFirstBinding?= null
+class MovieFragment : Fragment() {
+    private  var fragmentMoviesBinding:FragmentMoviesBinding?= null
     private lateinit var llViewBinding: RowAddItemBinding
     private lateinit var layoutList: LinearLayout
     private var popularMovieList:List<Result> = emptyList()
@@ -46,18 +46,18 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentFirstBinding.inflate(layoutInflater,container,false)
+        fragmentMoviesBinding = FragmentMoviesBinding.inflate(layoutInflater,container,false)
         llViewBinding = RowAddItemBinding.inflate(layoutInflater,container,false)
-        layoutList = _binding!!.layoutList
+        layoutList = fragmentMoviesBinding!!.layoutList
 
         getMovieGenre()
         addView()
-        (activity as DashboardActivity?)?.sendData(totalMovieList)
-        _binding!!.refreshLayout.setOnRefreshListener {
+        (activity as DashboardActivity?)?.onReceivedData(totalMovieList)
+        fragmentMoviesBinding!!.refreshLayout.setOnRefreshListener {
             addView()
-            _binding!!.refreshLayout.isRefreshing = false
+            fragmentMoviesBinding!!.refreshLayout.isRefreshing = false
         }
-        return _binding?.root
+        return fragmentMoviesBinding?.root
     }
 
     /** this method get the list of genres name
@@ -85,17 +85,20 @@ class FirstFragment : Fragment() {
     /** this method set the list of genre to recyclerView
      */
     private fun setGenreListToRecyclerView(genreList: List<Genre>) {
-        _binding?.rvMovieGenreList?.apply {
+        fragmentMoviesBinding?.rvMovieGenreList?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = RVGenreAdapter(genreList,layoutList,firstTabName)
         }
-        _binding?.rvMovieGenreList?.layoutManager = LinearLayoutManager(
+        fragmentMoviesBinding?.rvMovieGenreList?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
     }
 
+    /**
+     *  this method will add views if list is not empty else fetch the data and then add the view
+     */
     private fun addView(){
         if(popularMovieList.isNotEmpty()) {
             addViewToLayoutList(getString(R.string.popular),popularMovieList)
@@ -210,6 +213,9 @@ class FirstFragment : Fragment() {
         })
     }
 
+    /**
+     *  this method will get the list of popular movies
+     */
     private fun getPopularMovies(){
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
@@ -250,6 +256,10 @@ class FirstFragment : Fragment() {
             startActivity(intent)
         }
     }
+
+    /**
+     * this will set the categoryList list of movies in recyclerView
+     */
     private fun setDataToRecyclerView(recyclerView:RecyclerView, popularMovieList:List<Result> ){
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -272,7 +282,7 @@ class FirstFragment : Fragment() {
         }
     }
     interface FirstFragmentToActivity{
-        fun sendData(totalMovieList:List<Result>)
+        fun onReceivedData(totalMovieList:List<Result>)
     }
 
 

@@ -1,40 +1,34 @@
 package com.example.neatflixdemo.activities
 
 import android.content.Intent
-import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import android.hardware.biometrics.BiometricPrompt
 import android.os.Bundle
-import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.ViewPagerAdapter
 import com.example.neatflixdemo.constants.Constants
-import com.example.neatflixdemo.databinding.ActivityMainBinding
-import com.example.neatflixdemo.fragments.FirstFragment
+import com.example.neatflixdemo.databinding.ActivityDashboardBinding
+import com.example.neatflixdemo.fragments.MovieFragment
 import com.example.neatflixdemo.dataclasses.Result
-import com.example.neatflixdemo.fragments.SecondFragment
+import com.example.neatflixdemo.fragments.TvShowsFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import java.io.Serializable
 
 
-class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,SecondFragment.SecondFragmentToActivity {
+class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,TvShowsFragment.SecondFragmentToActivity {
 
-    private lateinit var mainBinding : ActivityMainBinding
+    private lateinit var dashboardActivityBinding : ActivityDashboardBinding
     private var totalMovieList:List<Result> = emptyList()
     private var totalTvShowList:List<Result> = emptyList()
-    private lateinit var promptInfo :PromptInfo
+    private val tabNameList:List<String> = listOf("Movies","TvShows")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        dashboardActivityBinding = ActivityDashboardBinding.inflate(layoutInflater)
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
-        setContentView(mainBinding.root)
-
-        val tabNameList:List<String> = listOf("Movies","TvShows")
+        setContentView(dashboardActivityBinding.root)
 
         setupViewPager(tabNameList)
         setupTabLayout(tabNameList)
-        mainBinding.ivSearchIcon.setOnClickListener{
+        dashboardActivityBinding.ivSearchIcon.setOnClickListener{
             var intent = Intent(this, SearchActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable(Constants.KEY_MOVIE_LIST, totalMovieList as Serializable)
@@ -42,13 +36,13 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
             intent.putExtras(bundle)
             startActivity(intent)
         }
-        mainBinding.ivMenuIcon.setOnClickListener{
+        dashboardActivityBinding.ivMenuIcon.setOnClickListener{
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
     }
 
-    override fun sendData(movieList:List<Result>) {
+    override fun onReceivedData(movieList:List<Result>) {
        totalMovieList = movieList
     }
 
@@ -56,9 +50,12 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
         totalTvShowList = tvShowList
     }
 
+    /**
+     * This setupTabLayout is responsible for setting up tab layout in main activity.
+     * */
     private fun setupTabLayout(tabNameList:List<String>) {
         TabLayoutMediator(
-            mainBinding.tabLayout, mainBinding.viewPager
+            dashboardActivityBinding.tabLayout, dashboardActivityBinding.viewPager
         ) { tab, position -> tab.text = tabNameList[position]}.attach()
     }
 
@@ -67,7 +64,7 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
      * */
     private fun setupViewPager(tabNameList:List<String>) {
         val viewPagerAdapter = ViewPagerAdapter(this, tabNameList.size )
-        mainBinding.viewPager.apply {
+        dashboardActivityBinding.viewPager.apply {
             adapter = viewPagerAdapter
             isUserInputEnabled = false
         }
@@ -77,7 +74,7 @@ class DashboardActivity : BaseActivity(), FirstFragment.FirstFragmentToActivity,
      * onBackPressed method is overridden from Activity class, Here we are handling back button click while being on user page.
      * */
     override fun onBackPressed() {
-        mainBinding.viewPager.let {
+        dashboardActivityBinding.viewPager.let {
             if(it.currentItem != 0){
                 it.currentItem = it.currentItem -1
             }

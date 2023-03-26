@@ -3,8 +3,8 @@ package com.example.neatflixdemo.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.neatflixdemo.fragments.FirstFragment
-import com.example.neatflixdemo.fragments.SecondFragment
+import com.example.neatflixdemo.fragments.MovieFragment
+import com.example.neatflixdemo.fragments.TvShowsFragment
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity, private var totalCount: Int) :
     FragmentStateAdapter(fragmentActivity) {
@@ -15,9 +15,9 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity, private var totalCoun
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FirstFragment()
-            1 -> SecondFragment()
-            else -> FirstFragment()
+            0 -> MovieFragment()
+            1 -> TvShowsFragment()
+            else -> MovieFragment()
         }
     }
 }

@@ -20,7 +20,7 @@ import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.services.GetDataService
 import com.example.neatflixdemo.adapter.RVGenreAdapter
 import com.example.neatflixdemo.constants.Constants
-import com.example.neatflixdemo.databinding.FragmentSecondBinding
+import com.example.neatflixdemo.databinding.FragmentTvshowsBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.network.RetrofitClient
 import retrofit2.Call
@@ -28,8 +28,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.Serializable
 
-class SecondFragment : Fragment() {
-    private var _binding:FragmentSecondBinding?=null
+class TvShowsFragment : Fragment() {
+    private var tvShowFragmentBinding:FragmentTvshowsBinding?=null
     private lateinit var layoutListTv: LinearLayout
     private var popularTvShowList:List<Result> = emptyList()
     private var recommendedTvShowList:List<Result> = emptyList()
@@ -37,23 +37,23 @@ class SecondFragment : Fragment() {
     private var tvAiringTodayList:List<Result> = emptyList()
     private var totalTvShowList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
-    private  val TAG:String = "SecondFragment"
+    private  val TAG:String = "SignUpActivity"
     private val secondTabName:String = "TvShows"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentSecondBinding.inflate(layoutInflater,container,false)
-        layoutListTv = _binding!!.layoutListTv
+        tvShowFragmentBinding = FragmentTvshowsBinding.inflate(layoutInflater,container,false)
+        layoutListTv = tvShowFragmentBinding!!.layoutListTv
         getTvGenreList()
         addView()
         (activity as DashboardActivity?)?.sendTvShowData(totalTvShowList)
-        
-        _binding!!.refreshLayout.setOnRefreshListener {
+
+        tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
             addView()
-            _binding!!.refreshLayout.isRefreshing = false
+            tvShowFragmentBinding!!.refreshLayout.isRefreshing = false
         }
-        return _binding?.root
+        return tvShowFragmentBinding?.root
 
     }
 
@@ -103,11 +103,11 @@ class SecondFragment : Fragment() {
 
 
     private fun setGenreListToRecyclerView(genreList: List<Genre>) {
-        _binding?.rvTvGenreList?.apply {
+        tvShowFragmentBinding?.rvTvGenreList?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = RVGenreAdapter(genreList,layoutListTv,secondTabName)
         }
-        _binding?.rvTvGenreList?.layoutManager = LinearLayoutManager(
+        tvShowFragmentBinding?.rvTvGenreList?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
             false

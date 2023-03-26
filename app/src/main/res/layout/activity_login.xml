@@ -26,11 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -41,7 +40,7 @@
             android:layout_marginTop="@dimen/_50sdp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_username"
-                android:hint="Username"
+                android:hint="@string/username"
                 android:textColor="@color/white"
                 android:paddingTop="@dimen/_5sdp"
                 android:background="@drawable/round_edge_signup_item"
@@ -65,7 +64,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_password"
                 android:inputType="textPassword"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:paddingTop="@dimen/_5sdp"
                 android:background="@drawable/round_edge_signup_item"
                 android:textColor="@color/white"
@@ -79,7 +78,7 @@
             android:layout_width="@dimen/_90sdp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
-            android:text="Login"
+            android:text="@string/login"
             android:backgroundTint="@color/background_color_secondary_app"
             android:background="@drawable/round_corner"
             android:textColor="@color/white"
@@ -102,9 +101,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have Account? "
-            android:textColor="@color/white"
-            android:textSize="16dp"/>
+            android:text="@string/don_t_have_account"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/btn_login_signup"
@@ -112,7 +110,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/blue"
             android:textSize="@dimen/_14sdp"
-            android:text="Sign Up"/>
+            android:text="@string/signup"/>
 
 
     </LinearLayout>

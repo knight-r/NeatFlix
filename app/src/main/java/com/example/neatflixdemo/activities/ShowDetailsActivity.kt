@@ -45,7 +45,7 @@ class ShowDetailsActivity : BaseActivity() {
     }
     override fun onResume() {
         super.onResume()
-        if (!callingActivity?.className.equals("SignUpActivity")) {
+        if (!callingActivity?.className.equals(getString(R.string.signup_activity))) {
             checkLoginStatus()
         }
     }

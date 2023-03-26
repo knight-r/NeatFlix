@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/rv_show_category"
         android:layout_marginTop="@dimen/_10sdp"
-        android:text="Category Name"
+        android:text="@string/category_name"
         android:textSize="@dimen/rv_heading_dimen"
         android:textColor="@color/white"
         android:textStyle="bold"

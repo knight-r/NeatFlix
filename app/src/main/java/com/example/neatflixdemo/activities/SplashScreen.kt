@@ -9,7 +9,7 @@ import com.example.neatflixdemo.R
 
 
 class SplashScreen : AppCompatActivity() {
-    private  val SPLASH_DISPLAY_LENGTH = 3000
+    private  val SPLASH_DISPLAY_LENGTH:Int = 3000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

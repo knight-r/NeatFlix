@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_10sdp"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textSize="@dimen/rv_heading_dimen"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -57,19 +57,18 @@
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_25sdp"
-        android:text="Name"
+        android:text="@string/name"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintBottom_toTopOf="@+id/table_layout"
         app:layout_constraintStart_toEndOf="@+id/iv_profile_picture"
         app:layout_constraintTop_toBottomOf="@+id/iv_profile_bg_image" />
 
     <TableLayout
-        android:id="@+id/tableLayout"
+        android:id="@+id/table_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_profile_picture">
-
         <TableRow android:padding="@dimen/_5sdp">
 
             <TextView
@@ -80,7 +79,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:drawableStart="@drawable/ic_phone_icon"
                 android:gravity="center"
-                android:text="Phone No."
+                android:text="@string/phone_no"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_profile_picture" />
@@ -96,7 +95,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:drawableStart="@drawable/ic_dob_icon"
                 android:gravity="center"
-                android:text="User DOB"
+                android:text="@string/user_dob"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_profile_username" />
@@ -112,7 +111,7 @@
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:drawableStart="@drawable/ic_address_icon"
-                android:text="User Address"
+                android:text="@string/user_address"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_profile_email" />
@@ -122,7 +121,7 @@
         android:id="@+id/logout_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Logout"
+        android:text="@string/logout"
         android:backgroundTint="@color/background_color_secondary_app"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

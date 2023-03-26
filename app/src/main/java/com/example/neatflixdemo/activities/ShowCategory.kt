@@ -2,16 +2,12 @@
 
 
 package com.example.neatflixdemo.activities
-
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.R
 import com.example.neatflixdemo.adapter.CategoryListAdapter
-import com.example.neatflixdemo.adapter.RVAddViewAdapter
 import com.example.neatflixdemo.databinding.ActivityShowCategoryBinding
 import com.example.neatflixdemo.dataclasses.Result
 
@@ -34,6 +30,10 @@ class ShowCategory : BaseActivity() {
         }
 
     }
+
+    /**
+     * it will set list of items to recyclerView
+     */
     private fun setDataToRecyclerView(recyclerView: RecyclerView, list:List<Result> ){
         val gridLayoutManager = GridLayoutManager(this, 3)
         recyclerView.apply {
