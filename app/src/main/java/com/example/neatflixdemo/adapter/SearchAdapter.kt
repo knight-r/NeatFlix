@@ -66,8 +66,7 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
     }
 
     override fun getItemCount(): Int {
-
-        return mList.size  // returning the size of array list.
+        return mList?.size ?: 0  // returning the size of array list.
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

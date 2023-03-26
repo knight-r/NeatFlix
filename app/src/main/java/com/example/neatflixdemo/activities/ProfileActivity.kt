@@ -1,8 +1,6 @@
 package com.example.neatflixdemo.activities
 
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
@@ -20,7 +18,7 @@ class ProfileActivity : BaseActivity() {
         setContentView(_binding.root)
 
         var sp = SharedPrefHelper.getSharedPrefObject(applicationContext)
-        if(!sp.getBoolean(Constants.KEY_IS_LOGGED_IN, false)) {
+        if (!sp.getBoolean(Constants.KEY_IS_LOGGED_IN, false)) {
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
             val userName = sp.getString(Constants.KEY_CURRENT_USER,"")
@@ -33,11 +31,9 @@ class ProfileActivity : BaseActivity() {
                 _binding.tvProfileAddress.text = "  ${it.address}"
             }
         }
-
-        _binding.backButton.setOnClickListener{
+        _binding.backButton.setOnClickListener {
             finish()
         }
-
         _binding.logoutBtn.setOnClickListener {
             logout(sp)
             finish()
@@ -45,10 +41,9 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-
     override fun onResume() {
         super.onResume()
-        if (!callingActivity?.className.equals("SignUpActivity")) {
+        if (!callingActivity?.className.equals(getString(R.string.signup_activity))) {
             checkLoginStatus()
         }
     }

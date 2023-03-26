@@ -1,6 +1,5 @@
 package com.example.neatflixdemo.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -21,7 +20,9 @@ class LoginActivity : BaseActivity() {
     private lateinit var biometricPrompt: BiometricPrompt
     private var count: Int = 0
     private var biometricManager: BiometricManager? = null
-    private var flag = false
+    private var isHardwareAvailable:Boolean = true
+    private var isFingerprintAvailable:Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
@@ -32,7 +33,6 @@ class LoginActivity : BaseActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
         loginBinding.btnLoginLogin.setOnClickListener {
-//            logout(SharedPrefHelper.getSharedPrefObject(applicationContext))
             loginUser()
         }
         checkUserLoggedIn()
@@ -45,36 +45,42 @@ class LoginActivity : BaseActivity() {
         }
 
     }
+
+    /**
+     * it will check if user is logged in or not
+     */
     private fun checkUserLoggedIn() {
-        if(SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
-            enableBiometricCheck()
-            if(flag){
+        if (SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
+            if (!isHardwareAvailable || !isFingerprintAvailable) {
                 startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
+            } else {
+                enableBiometricCheck()
             }
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
+    /**
+     * it will enable biometric popup if user has already logged in
+     */
     private fun enableBiometricCheck() {
-
         if (biometricManager == null) {
             biometricManager = BiometricManager.from(this)
         }
         when (biometricManager?.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-
+               // We don't have to do anything on biometric popup success
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-               flag = true
+               isHardwareAvailable = false
                 Utils.showMessage(this,getString(R.string.device_doesnot_support_fingerprint))
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                flag = true
+                isFingerprintAvailable = false
                 Utils.showMessage(this,getString(R.string.biometric_sensor_unavailable))
 
             }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                flag = true
+                isFingerprintAvailable = false
                 Utils.showMessage(this , getString(R.string.enable_fingerprint_in_setting))
             }
         }
@@ -98,10 +104,11 @@ class LoginActivity : BaseActivity() {
                     startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
 
                 }
+
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     ++count
-                    if(count<=3) {
+                    if (count <= 3) {
                         enableBiometricCheck()
                     } else {
                         biometricPrompt.cancelAuthentication()
@@ -109,51 +116,38 @@ class LoginActivity : BaseActivity() {
                     }
                 }
             })
-
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Fingerprint Login for Neatflix")
-            .setSubtitle("Log in using your biometric credential")
-            .setNegativeButtonText("Login Through Credentials")
+            .setTitle(getString(R.string.fingerprint_login_neatflix))
+            .setSubtitle(getString(R.string.login_using_biometric))
+            .setNegativeButtonText(getString(R.string.login_through_credentials))
             .build()
 
             biometricPrompt.authenticate(promptInfo)
 
     }
 
+    /**
+     * it will login the user using input username and password
+     */
     private fun loginUser(){
         val sharedPreferenceEditor = SharedPrefHelper.getSharedPrefObject(this).edit()
-        val userName:String = toLowerCase(loginBinding.etLoginUsername.text.toString())
+        val userName:String = loginBinding.etLoginUsername.text.toString().toLowerCase()
         val userPassword:String = loginBinding.etLoginPassword.text.toString()
         if(userName == "" || userPassword == "") {
             Utils.showMessage(this, getString(R.string.username_or_password_empty))
         } else if(SharedPrefHelper.verifyLogin(applicationContext, userName, userPassword)){
             sharedPreferenceEditor.putString(Constants.KEY_CURRENT_USER,userName)
             sharedPreferenceEditor.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
-            sharedPreferenceEditor.commit()
+            sharedPreferenceEditor.apply()
 
             if(count <= 3) {
                 enableBiometricCheck()
-            }
-            if( count > 3) {
+            } else if( count > 3) {
                 startActivity(Intent(this, DashboardActivity::class.java))
-            }else{
-                Utils.showMessage(this, getString(R.string.please_verify_your_biometric))
             }
         } else {
             Utils.showMessage(this, getString(R.string.user_not_found))
         }
     }
-    private fun toLowerCase(str: String): String {
-        var resultString = ""
-        for(character in str){
-            if(character in 'A'..'Z'){
-                val charValue = character.code
-                resultString.plus((charValue + 32).toChar())
 
-            }else{
-                resultString.plus(character)
-            }
-        }
-        return resultString
-    }
 }

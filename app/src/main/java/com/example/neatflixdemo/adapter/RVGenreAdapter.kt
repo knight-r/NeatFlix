@@ -17,7 +17,7 @@ import com.example.neatflixdemo.R
 import com.example.neatflixdemo.activities.ErrorPageActivity
 import com.example.neatflixdemo.activities.ShowCategory
 import com.example.neatflixdemo.constants.Constants
-import com.example.neatflixdemo.databinding.FragmentFirstBinding
+import com.example.neatflixdemo.databinding.FragmentMoviesBinding
 import com.example.neatflixdemo.databinding.RowGenreItemBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.network.RetrofitClient
@@ -31,7 +31,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
                      val mTabName:String) : RecyclerView.Adapter<RVGenreAdapter.ViewHolder>() {
     private var _context: Context? = null
     private lateinit var _binding: RowGenreItemBinding
-    private lateinit var firstFragmentBinding: FragmentFirstBinding
+    private lateinit var firstFragmentBinding: FragmentMoviesBinding
     private   var selectedPosition:Int=0
     private var genreId:Int = genreList[0].id
     private lateinit var layout_list:LinearLayout
@@ -39,7 +39,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         _context = parent.context
         layout_list = this.layoutList
-        firstFragmentBinding = FragmentFirstBinding.inflate(LayoutInflater.from(parent.context))
+        firstFragmentBinding = FragmentMoviesBinding.inflate(LayoutInflater.from(parent.context))
         _binding = RowGenreItemBinding.inflate(LayoutInflater.from(parent.context))
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_genre_item, parent, false)

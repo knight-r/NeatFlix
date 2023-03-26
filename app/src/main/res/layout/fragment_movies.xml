@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.FirstFragment">
+    tools:context=".fragments.MovieFragment">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_movie_genre_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         tools:listitem="@layout/row_genre_item"/>
    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
        android:id="@+id/refresh_layout"
@@ -20,13 +20,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+        android:layout_height="match_parent">
                 <LinearLayout
                     android:id="@+id/layout_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:orientation="vertical">
                 </LinearLayout>
     </ScrollView>

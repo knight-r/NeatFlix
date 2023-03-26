@@ -27,7 +27,7 @@ class SignUpActivity : BaseActivity() {
         chooseDate()
         signupBinding.btnRegRegister.setOnClickListener{
 
-                if(validCredentials(signupBinding.etRegUsername.text.toString() ,
+                if(isValidInput(signupBinding.etRegUsername.text.toString() ,
                         signupBinding.etRegPassword.text.toString(),
                         signupBinding.etRegConfirmPassword.text.toString(),
                         signupBinding.etRegAddress.text.toString(),
@@ -53,11 +53,14 @@ class SignUpActivity : BaseActivity() {
 
 
     }
+
+    /**
+     * this method will show the popup calender to choose date of birth
+     */
     private fun chooseDate(){
          signupBinding.tvRegDob.setOnClickListener {
              var c = Calendar.getInstance()
              val format = SimpleDateFormat("dd-MM-YYYY")
-
              val year = c.get(Calendar.YEAR)
              val month = c.get(Calendar.MONTH)
              val day = c.get(Calendar.DAY_OF_MONTH)
@@ -75,7 +78,12 @@ class SignUpActivity : BaseActivity() {
              datePickerDialog.show()
          }
      }
-    private fun validCredentials(
+
+    /**
+     * it will check if the data entered in the editTexts are valid are not
+     * @return: Boolean
+     */
+    private fun isValidInput(
         username: String,
         password: String,
         resetPassword: String,

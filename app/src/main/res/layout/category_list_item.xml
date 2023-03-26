@@ -19,7 +19,7 @@
             android:id="@+id/tv_category_list_name"
             android:layout_below="@+id/iv_category_list"
             android:textColor="@color/fade_white"
-            android:text="name"
+            android:text="@string/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView

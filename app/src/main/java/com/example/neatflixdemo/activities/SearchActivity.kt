@@ -35,7 +35,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
     private lateinit var listAdapter: SearchAdapter
     private var hashMap = HashMap<String,Int>()
     private lateinit var searchView: SearchView
-    private val REQUEST_CODE_SPEECH_INPUT = 1
+    private val REQUEST_CODE_SPEECH_INPUT:Int = 1
     private val TAG:String = "SearchActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,25 +49,13 @@ class SearchActivity : BaseActivity(), OnClickListener{
 
         actionBar?.hide()
 
-        /**
-         *  this method  get total movies list and shows list in single search list
-         */
         getTotalSearchList()
 
-        /**
-         *  this method sets search list objects in RecyclerView
-         */
         buildRecyclerView()
         searchView.queryHint = Html.fromHtml("<font color = #C7B9B9>" + "Search movies and Tv Shows" + "</font>")
 
-        /**
-         * this method is used to customize the UI of SearchView
-         */
         manageSearchViewUI()
 
-        /**
-         * this method filters the list of recyclerView based on text entered
-         */
         queryOnInput()
 
         searchBinding.backButton.setOnClickListener {
@@ -79,6 +67,9 @@ class SearchActivity : BaseActivity(), OnClickListener{
 
     }
 
+    /**
+     *  this method  get total movies list and shows list in single search list
+     */
     private fun getTotalSearchList() {
         val bundle: Bundle? = intent.extras
         totalMovieList = bundle?.getSerializable(Constants.KEY_MOVIE_LIST) as List<Result>
@@ -96,14 +87,17 @@ class SearchActivity : BaseActivity(), OnClickListener{
         }
     }
 
+    /**
+     * this method is used to customize the UI of SearchView
+     */
     private fun manageSearchViewUI() {
-        val idTextView = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+        val idTextView = searchView.context.resources.getIdentifier(getString(R.string.searchview_src_text_name), null, null)
         val textView = searchView.findViewById<View>(idTextView) as TextView
         textView.setTextColor(Color.WHITE)
-        val idCloseButton = searchView.context.resources.getIdentifier("android:id/search_close_btn", null, null)
+        val idCloseButton = searchView.context.resources.getIdentifier(getString(R.string.searchview_close_button_name), null, null)
         val closeButton:ImageView = searchView.findViewById<View>(idCloseButton) as ImageView
         closeButton.setOnClickListener {
-            val idCloseButton = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+            val idCloseButton = searchView.context.resources.getIdentifier(getString(R.string.searchview_edit_text_name), null, null)
             val et:EditText = searchView.findViewById<View>(idCloseButton) as EditText
             et.setText("")
         }
@@ -134,7 +128,6 @@ class SearchActivity : BaseActivity(), OnClickListener{
     }
 
 
-
     override fun onActivityResult(
         requestCode: Int, resultCode: Int,
         @Nullable data: Intent?,
@@ -151,6 +144,10 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
         }
     }
+
+    /**
+     * this method search the list of items based on texts entered
+     */
     private fun queryOnInput(){
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -162,6 +159,11 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
         })
     }
+
+    /**
+     * this method filters the list of items based on text entered and generate the final list
+     * @param: entered text in EditText
+     */
     private fun filter(text: String) {
         var filteredList = mutableListOf<Result>()
         for (item in totalList) {
@@ -180,6 +182,9 @@ class SearchActivity : BaseActivity(), OnClickListener{
         listAdapter.filterList(filteredList)
     }
 
+    /**
+     *  this method sets search list objects in RecyclerView
+     */
     private fun buildRecyclerView() {
         listAdapter = SearchAdapter(totalList )
         val manager = LinearLayoutManager(this)
@@ -190,12 +195,17 @@ class SearchActivity : BaseActivity(), OnClickListener{
 
         }
     }
+
+    /**
+     * this method gets the list of all categories of tvShow lists
+     */
     private fun getTotalTvShowList(){
         getTopRatedTvShows()
         getPopularTvShows()
         getTvAiringToday()
         getRecommendedTvShows()
     }
+
     /** this method get the list of top rated TvShows
      */
     private fun getTopRatedTvShows() {
@@ -277,6 +287,10 @@ class SearchActivity : BaseActivity(), OnClickListener{
             }
         })
     }
+
+    /**
+     * this method adds list of all categories in single list with unique items
+     */
     fun addTotalTvShowList(tvList:List<Result>){
         for(items in tvList){
             if(!hashMap.contains(items.name)){
@@ -286,6 +300,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
         }
 
     }
+
     override fun onResume() {
         super.onResume()
         if (!callingActivity?.className.equals("SignUpActivity")) {

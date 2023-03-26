@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.example.neatflixdemo.R
+import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityVideoPlayerBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -23,11 +24,14 @@ class VideoPlayerActivity : AppCompatActivity(){
 
     }
 
+    /**
+     * this will initiate the video player in activity
+     */
     private fun initializePlayer() {
         player = ExoPlayer.Builder(this) // <- context
             .build()
         val mediaItem = MediaItem.Builder()
-            .setUri("https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4")
+            .setUri(Constants.VIDEO_URL)
             .setMimeType(
                 MimeTypes.APPLICATION_MP4)
             .build()
@@ -35,7 +39,6 @@ class VideoPlayerActivity : AppCompatActivity(){
             DefaultDataSource.Factory(this) // <- context
         )
             .createMediaSource(mediaItem)
-
 
         player!!.apply {
             setMediaSource(mediaSource)

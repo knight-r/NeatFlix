@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:textColor="@color/fade_white"
-                    android:text="Title:" />
+                    android:text="@string/title" />
                 <TextView
                     android:id="@+id/tv_show_details_title"
                     android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:textColor="@color/fade_white"
-                    android:text="Overview:" />
+                    android:text="@string/overview" />
                 <TextView
                     android:id="@+id/tv_show_details_overview"
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:textColor="@color/fade_white"
-                    android:text="Release Date:" />
+                    android:text="@string/release_date" />
                 <TextView
                     android:id="@+id/tv_show_details_release_date"
                     android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:textColor="@color/fade_white"
-                    android:text="Rating:" />
+                    android:text="@string/rating" />
                 <TextView
                     android:id="@+id/tv_show_details_rating"
                     android:layout_width="wrap_content"
