@@ -24,6 +24,7 @@ import com.example.neatflixdemo.databinding.FragmentTvshowsBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
+import com.example.neatflixdemo.utils.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,9 +36,9 @@ class TvShowsFragment : Fragment() {
     private lateinit var tvShowData: TvShowData
     private var totalTvShowList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
-    private  val TAG:String = "SignUpActivity"
+    private  val TAG:String = "TvShowFragment"
     private val secondTabName:String = DashboardTabList.TVSHOWS.name
-    private val tvGenreId: Int = 10759
+    private var tvGenreId: Int = 10759
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -48,7 +49,10 @@ class TvShowsFragment : Fragment() {
         getTvGenreList()
         addView()
         (activity as DashboardActivity?)?.onReceivedTvShowsData(totalTvShowList)
+        Utils.genreID = tvGenreId
+        Log.e(TAG, Utils.genreID.toString())
         tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
+            tvGenreId = Utils.genreID
             layoutListTv.removeAllViewsInLayout()
             tvShowData = TvShowData(emptyList(), emptyList(), emptyList(),  emptyList(), mutableListOf())
             getPopularTvShows()
@@ -221,11 +225,13 @@ class TvShowsFragment : Fragment() {
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-        setDataToRecyclerView(recyclerView, tvShowList)
-        layoutListTv.addView(llView)
+        setDataToRecyclerView(recyclerView, newTvShowList)
+        if(newTvShowList.isNotEmpty()){
+            layoutListTv.addView(llView)
+        }
         val relativeLayout: RelativeLayout = llView.findViewById(R.id.rl_add_item)
         relativeLayout.setOnClickListener{
-            val intent = Intent(context, ShowCategory::class.java)
+            val intent = Intent(context , ShowCategory::class.java)
             val bundle = Bundle()
             bundle.putSerializable(getString(R.string.key_category_list), tvShowList as Serializable)
             bundle.putString(getString(R.string.key_category_name), textString)

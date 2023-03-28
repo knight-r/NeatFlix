@@ -40,7 +40,7 @@ class MovieFragment : Fragment() {
     private var totalMovieList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
     private val firstTabName:String = DashboardTabList.MOVIES.name
-    private val movieGenreId: Int = 28
+    private var movieGenreId: Int = 28
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -52,7 +52,9 @@ class MovieFragment : Fragment() {
         getMovieGenre()
         addView()
         (activity as DashboardActivity?)?.onReceivedMoviesData(totalMovieList)
+        Utils.genreID = movieGenreId
         fragmentMoviesBinding!!.refreshLayout.setOnRefreshListener {
+            movieGenreId = Utils.genreID
             layoutList.removeAllViewsInLayout()
             movieData =  MovieData(emptyList(),emptyList(),emptyList(),emptyList(),emptyList(), mutableListOf())
             getPopularMovies()
@@ -253,7 +255,7 @@ class MovieFragment : Fragment() {
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-        setDataToRecyclerView(recyclerView, movieList)
+        setDataToRecyclerView(recyclerView, newMoviesList)
         if(newMoviesList.isNotEmpty()){
             layoutList.addView(llView)
         }
@@ -261,7 +263,7 @@ class MovieFragment : Fragment() {
         relativeLayout.setOnClickListener{
             val intent = Intent(context, ShowCategory::class.java)
             val bundle = Bundle()
-            bundle.putSerializable(getString(R.string.key_category_list), movieList as Serializable)
+            bundle.putSerializable(getString(R.string.key_category_list), newMoviesList as Serializable)
             bundle.putString(getString(R.string.key_category_name), textString)
             intent.putExtras(bundle)
             startActivity(intent)

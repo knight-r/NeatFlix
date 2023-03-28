@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -25,7 +24,6 @@ import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.services.GetDataService
 import com.example.neatflixdemo.utils.Utils
-import com.google.android.exoplayer2.util.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,6 +52,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         holder.textViewGenre.text = genreList[position].name
         holder.itemView.setOnClickListener {
             genreId = genreList[position].id
+            Utils.genreID = genreId
             selectedPosition = position
             layout_list.removeAllViewsInLayout()
             if(mTabName == tabName){
@@ -289,7 +288,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-        setDataToRecyclerView(recyclerView, movieList)
+        setDataToRecyclerView(recyclerView, newMoviesList)
         if(newMoviesList.isNotEmpty()){
             layoutList.addView(llView)
         }
@@ -297,7 +296,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         relativeLayout.setOnClickListener{
             val intent = Intent(_context , ShowCategory::class.java)
             val bundle = Bundle()
-            bundle.putSerializable(_context?.getString(R.string.key_category_list), movieList as Serializable)
+            bundle.putSerializable(_context?.getString(R.string.key_category_list), newMoviesList as Serializable)
             bundle.putString(_context?.getString(R.string.key_category_name), textString)
             intent.putExtras(bundle)
             _context?.startActivity(intent)

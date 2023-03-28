@@ -26,7 +26,7 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: Result = mList[position]
-       if(model.poster_path.isNotEmpty()){
+       if(model.poster_path != null){
            holder.apply {
                imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                    crossfade(true)
