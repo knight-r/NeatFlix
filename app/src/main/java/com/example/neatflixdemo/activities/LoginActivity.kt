@@ -1,5 +1,6 @@
 package com.example.neatflixdemo.activities
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -75,6 +76,7 @@ class LoginActivity : BaseActivity() {
     /**
      * it will enable biometric popup if user has already logged in
      */
+    @SuppressLint("SuspiciousIndentation")
     private fun enableBiometricCheck() {
         if (biometricManager == null) {
             biometricManager = BiometricManager.from(this)

@@ -7,7 +7,7 @@ import android.os.Build
 import android.widget.Toast
 class Utils {
     companion object {
-
+        var genreID: Int = 0
         //var tvShowGenreId: Int
         fun showMessage(context: Context, msg: String) {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
