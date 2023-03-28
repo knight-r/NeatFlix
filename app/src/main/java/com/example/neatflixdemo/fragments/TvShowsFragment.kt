@@ -25,6 +25,7 @@ import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.utils.Utils
+import com.google.android.exoplayer2.util.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,7 +39,7 @@ class TvShowsFragment : Fragment() {
     private var hashMap = mutableMapOf<String,Int>()
     private  val TAG:String = "TvShowFragment"
     private val secondTabName:String = DashboardTabList.TVSHOWS.name
-    private var tvGenreId: Int = 10759
+    private var tvGenreId: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -47,9 +48,8 @@ class TvShowsFragment : Fragment() {
         layoutListTv = tvShowFragmentBinding!!.layoutListTv
         tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf())
         getTvGenreList()
-        addView()
+
         (activity as DashboardActivity?)?.onReceivedTvShowsData(totalTvShowList)
-        Utils.genreID = tvGenreId
         Log.e(TAG, Utils.genreID.toString())
         tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
             tvGenreId = Utils.genreID
@@ -103,6 +103,9 @@ class TvShowsFragment : Fragment() {
                 val genreListBody = response.body()
                 val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
                 setGenreListToRecyclerView(genreList)
+                tvGenreId = genreList[0].id
+                Utils.genreID = tvGenreId
+                addView()
             }
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))

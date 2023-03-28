@@ -40,7 +40,7 @@ class MovieFragment : Fragment() {
     private var totalMovieList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
     private val firstTabName:String = DashboardTabList.MOVIES.name
-    private var movieGenreId: Int = 28
+    private var movieGenreId: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -50,9 +50,9 @@ class MovieFragment : Fragment() {
         layoutList = fragmentMoviesBinding!!.layoutList
         movieData = MovieData(emptyList(),emptyList(),emptyList(),emptyList(),emptyList(), mutableListOf())
         getMovieGenre()
-        addView()
+
         (activity as DashboardActivity?)?.onReceivedMoviesData(totalMovieList)
-        Utils.genreID = movieGenreId
+
         fragmentMoviesBinding!!.refreshLayout.setOnRefreshListener {
             movieGenreId = Utils.genreID
             layoutList.removeAllViewsInLayout()
@@ -78,6 +78,9 @@ class MovieFragment : Fragment() {
                 val genreListBody = response.body()
                 val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
                 setGenreListToRecyclerView(genreList)
+                movieGenreId = genreList[0].id
+                Utils.genreID = movieGenreId
+                addView()
             }
 
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
