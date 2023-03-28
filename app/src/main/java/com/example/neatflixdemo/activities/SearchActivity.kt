@@ -24,8 +24,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-
-
 class SearchActivity : BaseActivity(), OnClickListener{
     private lateinit var searchBinding : ActivitySearchBinding
     private lateinit var totalMovieList: List<Result>
@@ -52,7 +50,7 @@ class SearchActivity : BaseActivity(), OnClickListener{
         getTotalSearchList()
 
         buildRecyclerView()
-        searchView.queryHint = Html.fromHtml("<font color = #C7B9B9>" + "Search movies and Tv Shows" + "</font>")
+        searchView.queryHint = Html.fromHtml(getString(R.string.search_view_hint))
 
         manageSearchViewUI()
 

@@ -21,7 +21,6 @@ class VideoPlayerActivity : AppCompatActivity(){
         videoBinding = ActivityVideoPlayerBinding.inflate(layoutInflater)
         setContentView(videoBinding.root)
         initializePlayer()
-
     }
 
     /**

@@ -25,8 +25,7 @@ class RVAddViewAdapter(private val mList:List<Result>): RecyclerView.Adapter<RVA
         val model: Result = mList[position]
         holder.imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
             crossfade(true)
-            placeholder(R.drawable.ic_launcher_background)
-        }
+            placeholder(R.drawable.ic_placeholder)        }
 
        holder.itemView.setOnClickListener{
            val intent = Intent(_context, ShowDetailsActivity::class.java)

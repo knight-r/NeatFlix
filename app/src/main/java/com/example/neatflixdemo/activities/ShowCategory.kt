@@ -28,7 +28,6 @@ class ShowCategory : BaseActivity() {
         _binding.backButton.setOnClickListener{
             finish()
         }
-
     }
 
     /**
@@ -40,8 +39,6 @@ class ShowCategory : BaseActivity() {
             layoutManager = gridLayoutManager
             adapter = CategoryListAdapter(list)
         }
-
-
     }
 
 

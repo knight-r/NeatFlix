@@ -58,4 +58,14 @@
     <string name="phone_number">Phone number</string>
     <string name="address">Address</string>
     <string name="create_account">Create Account</string>
+    <string name="search_view_hint"><![CDATA[<font color = #C7B9B9>Search Movies and TV Shows</font>]]></string>
+    <string name="genres">Genres</string>
+    <string name="check_internet_connection">Internet not available, Cross check your internet connectivity and try again</string>
+    <string name="info">Info</string>
+    <string name="ok">OK</string>
+    <string name="tvshows_fragment">TvShowsFragment</string>
+    <string name="reting">\"Rating: \"</string>
+    <string name="released_on">\"Released on: \"</string>
+    <string name="movie_name">Movie Name</string>
+    <string name="genre">Genre</string>
 </resources>

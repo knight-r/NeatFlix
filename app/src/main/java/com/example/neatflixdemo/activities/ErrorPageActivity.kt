@@ -10,6 +10,5 @@ class ErrorPageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_error_page)
         window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-
     }
 }

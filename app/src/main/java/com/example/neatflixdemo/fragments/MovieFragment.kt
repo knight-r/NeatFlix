@@ -22,8 +22,10 @@ import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentMoviesBinding
 import com.example.neatflixdemo.databinding.RowAddItemBinding
 import com.example.neatflixdemo.dataclasses.*
+import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.services.GetDataService
+import com.example.neatflixdemo.utils.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,14 +36,11 @@ class MovieFragment : Fragment() {
     private  var fragmentMoviesBinding:FragmentMoviesBinding?= null
     private lateinit var llViewBinding: RowAddItemBinding
     private lateinit var layoutList: LinearLayout
-    private var popularMovieList:List<Result> = emptyList()
-    private var nowPlayingList:List<Result> = emptyList()
-    private var recommendedMovieList:List<Result> = emptyList()
-    private var topRatedMovieList:List<Result> = emptyList()
-    private var upcomingMovieList:List<Result> = emptyList()
+     private lateinit var movieData: MovieData
     private var totalMovieList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
-    private val firstTabName:String = "Movies"
+    private val firstTabName:String = DashboardTabList.MOVIES.name
+    private val movieGenreId: Int = 28
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -49,12 +48,18 @@ class MovieFragment : Fragment() {
         fragmentMoviesBinding = FragmentMoviesBinding.inflate(layoutInflater,container,false)
         llViewBinding = RowAddItemBinding.inflate(layoutInflater,container,false)
         layoutList = fragmentMoviesBinding!!.layoutList
-
+        movieData = MovieData(emptyList(),emptyList(),emptyList(),emptyList(),emptyList(), mutableListOf())
         getMovieGenre()
         addView()
-        (activity as DashboardActivity?)?.onReceivedData(totalMovieList)
+        (activity as DashboardActivity?)?.onReceivedMoviesData(totalMovieList)
         fragmentMoviesBinding!!.refreshLayout.setOnRefreshListener {
-            addView()
+            layoutList.removeAllViewsInLayout()
+            movieData =  MovieData(emptyList(),emptyList(),emptyList(),emptyList(),emptyList(), mutableListOf())
+            getPopularMovies()
+            getNowPlayingMovies()
+            getRecommendedMovies()
+            getTopRatedMovies()
+            getUpComingMovies()
             fragmentMoviesBinding!!.refreshLayout.isRefreshing = false
         }
         return fragmentMoviesBinding?.root
@@ -70,7 +75,6 @@ class MovieFragment : Fragment() {
             override fun onResponse(call: Call<GenreList?>, response: Response<GenreList?>) {
                 val genreListBody = response.body()
                 val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
-
                 setGenreListToRecyclerView(genreList)
             }
 
@@ -100,28 +104,28 @@ class MovieFragment : Fragment() {
      *  this method will add views if list is not empty else fetch the data and then add the view
      */
     private fun addView(){
-        if(popularMovieList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.popular),popularMovieList)
+        if(movieData.popularMovies.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.popular),movieData.popularMovies)
         } else {
             getPopularMovies()
         }
-        if(nowPlayingList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.now_playing), nowPlayingList)
+        if(movieData.nowPlayingMovies.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.now_playing), movieData.nowPlayingMovies)
         } else {
             getNowPlayingMovies()
         }
-        if(recommendedMovieList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.recommendations),recommendedMovieList)
+        if(movieData.recommendedMovies.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.recommendations),movieData.recommendedMovies)
         } else {
             getRecommendedMovies()
         }
-        if(topRatedMovieList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.top_rated),topRatedMovieList)
+        if(movieData.topRatedMovies.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.top_rated),movieData.topRatedMovies)
         }else {
             getTopRatedMovies()
         }
-        if(upcomingMovieList.isNotEmpty()){
-            addViewToLayoutList(getString(R.string.upcoming_movies), upcomingMovieList)
+        if(movieData.upcomingMovies.isNotEmpty()){
+            addViewToLayoutList(getString(R.string.upcoming_movies), movieData.upcomingMovies)
         }else {
             getUpComingMovies()
         }
@@ -134,14 +138,14 @@ class MovieFragment : Fragment() {
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getRecommendedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<Recommendations?> {
-            override fun onResponse(call: Call<Recommendations?>, response: Response<Recommendations?>) {
+            Callback<RecommendedMovies?> {
+            override fun onResponse(call: Call<RecommendedMovies?>, response: Response<RecommendedMovies?>) {
                 val listBody = response.body()
-                recommendedMovieList = listBody!!.results
-                addViewToLayoutList(getString(R.string.recommendations),recommendedMovieList)
-                addTotalMovieList(recommendedMovieList)
+                movieData.recommendedMovies = listBody!!.results
+                addViewToLayoutList(getString(R.string.recommendations), movieData.recommendedMovies)
+                addTotalMovieList( movieData.recommendedMovies)
             }
-            override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
+            override fun onFailure(call: Call<RecommendedMovies?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e(getString(R.string.first_fragment),t.message.toString())
             }
@@ -155,14 +159,14 @@ class MovieFragment : Fragment() {
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getUpComingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<Upcoming?> {
-            override fun onResponse(call: Call<Upcoming?>, response: Response<Upcoming?>) {
+            Callback<UpcomingMovies?> {
+            override fun onResponse(call: Call<UpcomingMovies?>, response: Response<UpcomingMovies?>) {
                 val listBody = response.body()
-                upcomingMovieList = listBody!!.results
-                addViewToLayoutList(getString(R.string.now_playing),upcomingMovieList)
-                addTotalMovieList(upcomingMovieList)
+                movieData.upcomingMovies = listBody!!.results
+                addViewToLayoutList(getString(R.string.upcoming_movies), movieData.upcomingMovies)
+                addTotalMovieList(movieData.upcomingMovies)
             }
-            override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
+            override fun onFailure(call: Call<UpcomingMovies?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e(getString(R.string.first_fragment),t.message.toString())
             }
@@ -176,15 +180,15 @@ class MovieFragment : Fragment() {
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getTopRatedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<TopRated?> {
-            override fun onResponse(call: Call<TopRated?>, response: Response<TopRated?>) {
+            Callback<TopRatedMovies?> {
+            override fun onResponse(call: Call<TopRatedMovies?>, response: Response<TopRatedMovies?>) {
                 val listBody = response.body()
-                topRatedMovieList = listBody!!.results
-                addViewToLayoutList(getString(R.string.top_rated),topRatedMovieList)
-                addTotalMovieList(topRatedMovieList)
+                movieData.topRatedMovies = listBody!!.results
+                addViewToLayoutList(getString(R.string.top_rated),   movieData.topRatedMovies)
+                addTotalMovieList(movieData.topRatedMovies)
 
             }
-            override fun onFailure(call: Call<TopRated?>, t: Throwable) {
+            override fun onFailure(call: Call<TopRatedMovies?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e(getString(R.string.first_fragment),t.message.toString())
             }
@@ -198,15 +202,15 @@ class MovieFragment : Fragment() {
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getNowPlayingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<NowPlaying?> {
-            override fun onResponse(call: Call<NowPlaying?>, response: Response<NowPlaying?>) {
+            Callback<NowPlayingMovies?> {
+            override fun onResponse(call: Call<NowPlayingMovies?>, response: Response<NowPlayingMovies?>) {
                 val listBody = response.body()
-                nowPlayingList = listBody!!.results
-                addViewToLayoutList(getString(R.string.now_playing),nowPlayingList)
-                addTotalMovieList(nowPlayingList)
+                movieData.nowPlayingMovies = listBody!!.results
+                addViewToLayoutList(getString(R.string.now_playing),movieData.nowPlayingMovies)
+                addTotalMovieList(movieData.nowPlayingMovies)
 
             }
-            override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
+            override fun onFailure(call: Call<NowPlayingMovies?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
                 Log.e(getString(R.string.first_fragment),t.message.toString())
             }
@@ -219,14 +223,13 @@ class MovieFragment : Fragment() {
     private fun getPopularMovies(){
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
-
         dataService?.getPopularMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
             Callback<PopularMovies?> {
             override fun onResponse(call: Call<PopularMovies?>, response: Response<PopularMovies?>) {
                 val listBody = response.body()
-                popularMovieList = listBody!!.results
-                addViewToLayoutList(getString(R.string.popular), popularMovieList)
-                addTotalMovieList(popularMovieList)
+                movieData.popularMovies = listBody!!.results
+                addViewToLayoutList(getString(R.string.popular), movieData.popularMovies)
+                addTotalMovieList(movieData.popularMovies)
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -240,12 +243,20 @@ class MovieFragment : Fragment() {
      *  this method add view item in layout list
      */
     fun addViewToLayoutList(textString:String, movieList:List<Result>){
+        var newMoviesList = mutableListOf<Result>()
+        for(i in movieList.indices){
+            if(movieList[i].genre_ids.contains(movieGenreId)){
+                newMoviesList.add(movieList[i])
+            }
+        }
         val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
         setDataToRecyclerView(recyclerView, movieList)
-        layoutList.addView(llView)
+        if(newMoviesList.isNotEmpty()){
+            layoutList.addView(llView)
+        }
         val relativeLayout:RelativeLayout = llView.findViewById(R.id.rl_add_item)
         relativeLayout.setOnClickListener{
             val intent = Intent(context, ShowCategory::class.java)
@@ -272,6 +283,9 @@ class MovieFragment : Fragment() {
         )
     }
 
+    /**
+     * it will add all category movie list in a single list with unique items
+     */
     private fun addTotalMovieList(movieList:List<Result>){
 
         for(items in movieList){
@@ -281,8 +295,12 @@ class MovieFragment : Fragment() {
           }
         }
     }
+
+    /**
+     * it will send the totalMovieList to DashboardActivity
+     */
     interface FirstFragmentToActivity{
-        fun onReceivedData(totalMovieList:List<Result>)
+        fun onReceivedMoviesData(totalMovieList:List<Result>)
     }
 
 

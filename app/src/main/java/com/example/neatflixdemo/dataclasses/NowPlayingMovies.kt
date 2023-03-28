@@ -1,6 +1,6 @@
 package com.example.neatflixdemo.dataclasses
 
-data class Upcoming(
+data class NowPlayingMovies(
     val dates: Dates,
     val page: Int,
     val results: List<Result>,

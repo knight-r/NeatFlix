@@ -39,7 +39,6 @@ class ShowDetailsActivity : BaseActivity() {
         binding.ivYoutubeVideo.setOnClickListener{
             val intent = Intent(this, VideoPlayerActivity::class.java)
             startActivity(intent)
-
         }
 
     }

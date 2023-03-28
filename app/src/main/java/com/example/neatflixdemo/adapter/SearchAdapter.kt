@@ -44,6 +44,7 @@ class SearchAdapter( mList:List<Result>) : RecyclerView.Adapter<SearchAdapter.Vi
             }
             searchItemIV.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                 crossfade(true)
+                placeholder(R.drawable.ic_placeholder)
             }
             model.title?.let {
                 titleTV.text = model.title

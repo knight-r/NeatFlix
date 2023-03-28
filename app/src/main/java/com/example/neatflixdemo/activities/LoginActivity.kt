@@ -1,5 +1,7 @@
 package com.example.neatflixdemo.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -29,20 +31,31 @@ class LoginActivity : BaseActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.background_color_app)
         setContentView(loginBinding.root)
 
-        loginBinding.btnLoginSignup.setOnClickListener {
-            startActivity(Intent(this, SignUpActivity::class.java))
-        }
-        loginBinding.btnLoginLogin.setOnClickListener {
-            loginUser()
-        }
-        checkUserLoggedIn()
-        loginBinding.ivFingerPrint.setOnClickListener{
-            if(SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
-                enableBiometricCheck()
-            }else {
-                Utils.showMessage(this, getString(R.string.please_login_first))
+        if(!Utils.checkForInternet(this)) {
+            val alertDialog: AlertDialog = AlertDialog.Builder(this@LoginActivity).create()
+
+            alertDialog.setTitle(getString(R.string.info))
+            alertDialog.setMessage(getString(R.string.check_internet_connection))
+            alertDialog.setButton(getString(R.string.ok),
+                DialogInterface.OnClickListener { dialog, which -> finish() })
+            alertDialog.show()
+        } else {
+            loginBinding.btnLoginSignup.setOnClickListener {
+                startActivity(Intent(this, SignUpActivity::class.java))
+            }
+            loginBinding.btnLoginLogin.setOnClickListener {
+                loginUser()
+            }
+            checkUserLoggedIn()
+            loginBinding.ivFingerPrint.setOnClickListener{
+                if(SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
+                    enableBiometricCheck()
+                }else {
+                    Utils.showMessage(this, getString(R.string.please_login_first))
+                }
             }
         }
+
 
     }
 
@@ -90,7 +103,7 @@ class LoginActivity : BaseActivity() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     ++count
-                    if(count<=3) {
+                    if(count <= 3) {
                         enableBiometricCheck()
                     } else {
                         biometricPrompt.cancelAuthentication()
@@ -99,7 +112,8 @@ class LoginActivity : BaseActivity() {
                 }
 
                 override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult) {
+                    result: BiometricPrompt.AuthenticationResult,
+                ) {
                     super.onAuthenticationSucceeded(result)
                     startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
 
@@ -133,7 +147,7 @@ class LoginActivity : BaseActivity() {
         val sharedPreferenceEditor = SharedPrefHelper.getSharedPrefObject(this).edit()
         val userName:String = loginBinding.etLoginUsername.text.toString().toLowerCase()
         val userPassword:String = loginBinding.etLoginPassword.text.toString()
-        if(userName == "" || userPassword == "") {
+        if(userName.isEmpty() || userPassword.isEmpty()) {
             Utils.showMessage(this, getString(R.string.username_or_password_empty))
         } else if(SharedPrefHelper.verifyLogin(applicationContext, userName, userPassword)){
             sharedPreferenceEditor.putString(Constants.KEY_CURRENT_USER,userName)
@@ -142,12 +156,17 @@ class LoginActivity : BaseActivity() {
 
             if(count <= 3) {
                 enableBiometricCheck()
-            } else if( count > 3) {
+            } else {
                 startActivity(Intent(this, DashboardActivity::class.java))
             }
         } else {
             Utils.showMessage(this, getString(R.string.user_not_found))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
 }

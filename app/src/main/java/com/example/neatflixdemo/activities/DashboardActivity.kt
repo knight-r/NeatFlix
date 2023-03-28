@@ -9,6 +9,7 @@ import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivityDashboardBinding
 import com.example.neatflixdemo.fragments.MovieFragment
 import com.example.neatflixdemo.dataclasses.Result
+import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.fragments.TvShowsFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import java.io.Serializable
@@ -19,7 +20,7 @@ class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,
     private lateinit var dashboardActivityBinding : ActivityDashboardBinding
     private var totalMovieList:List<Result> = emptyList()
     private var totalTvShowList:List<Result> = emptyList()
-    private val tabNameList:List<String> = listOf("Movies","TvShows")
+    private val tabNameList:List<String> = listOf(DashboardTabList.MOVIES.name, DashboardTabList.TVSHOWS.name)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dashboardActivityBinding = ActivityDashboardBinding.inflate(layoutInflater)
@@ -28,7 +29,7 @@ class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,
 
         setupViewPager(tabNameList)
         setupTabLayout(tabNameList)
-        dashboardActivityBinding.ivSearchIcon.setOnClickListener{
+        dashboardActivityBinding.ivSearchIcon.setOnClickListener {
             var intent = Intent(this, SearchActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable(Constants.KEY_MOVIE_LIST, totalMovieList as Serializable)
@@ -36,17 +37,22 @@ class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,
             intent.putExtras(bundle)
             startActivity(intent)
         }
-        dashboardActivityBinding.ivMenuIcon.setOnClickListener{
+        dashboardActivityBinding.ivMenuIcon.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
-
     }
 
-    override fun onReceivedData(movieList:List<Result>) {
+    /**
+     * this method is overridden to receive movieList from moviesFragment
+     */
+    override fun onReceivedMoviesData(movieList:List<Result>) {
        totalMovieList = movieList
     }
 
-    override fun sendTvShowData(tvShowList: List<Result>) {
+    /**
+     * this method is overridden to receive tvShowList from moviesFragment
+     */
+    override fun onReceivedTvShowsData(tvShowList: List<Result>) {
         totalTvShowList = tvShowList
     }
 
@@ -71,7 +77,7 @@ class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,
     }
 
     /**
-     * onBackPressed method is overridden from Activity class, Here we are handling back button click while being on user page.
+     * onBackPressed method is overridden from BaseActivity class, Here we are handling back button click while being on user page.
      * */
     override fun onBackPressed() {
         dashboardActivityBinding.viewPager.let {
@@ -84,7 +90,7 @@ class DashboardActivity : BaseActivity(), MovieFragment.FirstFragmentToActivity,
 
     override fun onResume() {
         super.onResume()
-        if (!callingActivity?.className.equals("SignUpActivity")) {
+        if (!callingActivity?.className.equals(getString(R.string.signup_activity).trim())) {
             checkLoginStatus()
         }
     }

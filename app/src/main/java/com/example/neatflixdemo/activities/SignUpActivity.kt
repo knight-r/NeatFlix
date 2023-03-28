@@ -14,7 +14,7 @@ import java.util.*
 
 class SignUpActivity : BaseActivity() {
     private lateinit var signupBinding:ActivitySignUpBinding
-    private val countryCode:String = "+91 "
+    private val countryCode:String = "+91"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         signupBinding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -37,7 +37,7 @@ class SignUpActivity : BaseActivity() {
                         signupBinding.etRegUsername.error = getString(R.string.user_already_exists)
                     }else{
                         val newUser = Users(signupBinding.etRegUsername.text.toString().toLowerCase() ,
-                            countryCode + signupBinding.etRegPhone.text.toString(),
+                            countryCode + " " + signupBinding.etRegPhone.text.toString(),
                             signupBinding.tvRegDob.text.toString(),
                             signupBinding.etRegAddress.text.toString(),
                             signupBinding.etRegPassword.text.toString())
@@ -104,8 +104,9 @@ class SignUpActivity : BaseActivity() {
         }
         return true
     }
+
     private fun validPhoneNumber(phoneNumber:String):Boolean {
-        val phone = phoneNumber.trim { it <= ' ' }
+        val phone: String = phoneNumber.trim()
         return Patterns.PHONE.matcher(phone).matches()
     }
     override fun onResume() {

@@ -26,11 +26,11 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: Result = mList[position]
-       if(model.poster_path != ""){
+       if(model.poster_path.isNotEmpty()){
            holder.apply {
                imageView.load(Constants.API_TMDB_IMAGE_BASE_URL + model.poster_path) {
                    crossfade(true)
-                   placeholder(R.drawable.ic_launcher_background)
+                   placeholder(R.drawable.ic_placeholder)
                }
                model.name?.let {
                    nameTV.text = model.name
@@ -39,14 +39,12 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
                    nameTV.text = model.title
                }
                if(model.release_date != null){
-                   releaseDateTv.text = "Released on: " + model.release_date
+                   releaseDateTv.text = _context.getString(R.string.released_on) + model.release_date
                }else{
                    releaseDateTv.visibility = View.GONE
                }
-//               model.release_date?.let {
-//               }
                model.vote_average.let {
-                   ratingTV.text = "Rating: " + model.vote_average
+                   ratingTV.text = _context.getString(R.string.reting) + model.vote_average
                }
 
            }
@@ -54,7 +52,7 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
         holder.itemView.setOnClickListener{
             val intent = Intent(_context, ShowDetailsActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("result_data", model as Serializable)
+            bundle.putSerializable(_context.getString(R.string.result_data), model as Serializable)
             intent.putExtras(bundle)
             _context.startActivity(intent)
         }
@@ -64,7 +62,6 @@ class CategoryListAdapter(private val mList:List<Result>): RecyclerView.Adapter<
     override fun getItemCount(): Int {
         return mList.size
     }
-
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val imageView: ImageView = itemView.findViewById(R.id.iv_category_list)

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,11 @@ import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentMoviesBinding
 import com.example.neatflixdemo.databinding.RowGenreItemBinding
 import com.example.neatflixdemo.dataclasses.*
+import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
 import com.example.neatflixdemo.services.GetDataService
+import com.example.neatflixdemo.utils.Utils
+import com.google.android.exoplayer2.util.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,9 +37,9 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
     private lateinit var _binding: RowGenreItemBinding
     private lateinit var firstFragmentBinding: FragmentMoviesBinding
     private   var selectedPosition:Int=0
-    private var genreId:Int = genreList[0].id
     private lateinit var layout_list:LinearLayout
-    private val tabName:String = "Movies"
+    private val tabName:String = DashboardTabList.MOVIES.name
+    private var genreId: Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         _context = parent.context
         layout_list = this.layoutList
@@ -48,7 +52,6 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         holder.textViewGenre.text = genreList[position].name
-
         holder.itemView.setOnClickListener {
             genreId = genreList[position].id
             selectedPosition = position
@@ -64,9 +67,7 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         if(selectedPosition == position) {
             holder.textViewGenre.setBackgroundResource(R.drawable.item_change_color)
         }else {
-
             holder.textViewGenre.setBackgroundResource(R.drawable.round_edge_item)
-
         }
 
     }
@@ -103,15 +104,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             override fun onResponse(call: Call<TopRatedTvShows?>, response: Response<TopRatedTvShows?>) {
                 val listBody = response.body()
                 val tvShowList: List<Result> = listBody!!.results
-                var newTvShowList = mutableListOf<Result>()
-                for(i in tvShowList.indices){
-                    if(tvShowList[i].genre_ids.contains(genreId)){
-                        newTvShowList.add(tvShowList[i])
-                    }
-                }
-                if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.top_rated) , newTvShowList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.top_rated) , tvShowList)
+
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
                 Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
@@ -130,15 +124,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             override fun onResponse(call: Call<PopularTvShows?>, response: Response<PopularTvShows?>) {
                 val listBody = response.body()
                 val tvShowList: List<Result> = listBody!!.results
-                var newTvShowList = mutableListOf<Result>()
-                for(i in tvShowList.indices){
-                    if(tvShowList[i].genre_ids.contains(genreId)){
-                        newTvShowList.add(tvShowList[i])
-                    }
-                }
-                if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.popular), newTvShowList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.popular), tvShowList)
+
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
                 Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
@@ -158,15 +145,8 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             override fun onResponse(call: Call<TvAiringToday?>, response: Response<TvAiringToday?>) {
                 val listBody = response.body()
                 val tvShowList: List<Result> = listBody!!.results
-                var newTvShowList = mutableListOf<Result>()
-                for(i in tvShowList.indices){
-                    if(tvShowList[i].genre_ids.contains(genreId)){
-                        newTvShowList.add(tvShowList[i])
-                    }
-                }
-                if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.tv_airing_today), newTvShowList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.tv_airing_today), tvShowList)
+
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
                 Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
@@ -185,17 +165,9 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             Callback<RecommendedTvShows?> {
             override fun onResponse(call: Call<RecommendedTvShows?>, response: Response<RecommendedTvShows?>) {
                 val listBody = response.body()
-
                 val tvShowList: List<Result> = listBody!!.results
-                var newTvShowList = mutableListOf<Result>()
-                for(i in tvShowList.indices){
-                    if(tvShowList[i].genre_ids.contains(genreId)){
-                        newTvShowList.add(tvShowList[i])
-                    }
-                }
-                if(newTvShowList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.recommendations), newTvShowList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.recommendations), tvShowList)
+
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
                 Log.e(_context!!.getString(R.string.second_fragment),t.message.toString())
@@ -213,16 +185,9 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
             Callback<PopularMovies?> {
             override fun onResponse(call: Call<PopularMovies?>, response: Response<PopularMovies?>) {
                 val listBody = response.body()
-                val popularMovieList: List<Result> = listBody!!.results
-                var newMoviesList = mutableListOf<Result>()
-                for(i in popularMovieList.indices){
-                    if(popularMovieList[i].genre_ids.contains(genreId)){
-                        newMoviesList.add(popularMovieList[i])
-                    }
-                }
-                if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.popular), newMoviesList)
-                }
+                val movieList: List<Result> = listBody!!.results
+                addViewToLayoutList(_context!!.getString(R.string.popular), movieList)
+
             }
             override fun onFailure(call: Call<PopularMovies?>, t: Throwable) {
                 Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
@@ -237,21 +202,14 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getRecommendedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<Recommendations?> {
-            override fun onResponse(call: Call<Recommendations?>, response: Response<Recommendations?>) {
+            Callback<RecommendedMovies?> {
+            override fun onResponse(call: Call<RecommendedMovies?>, response: Response<RecommendedMovies?>) {
                 val listBody = response.body()
                 val movieList: List<Result> = listBody!!.results
-                var newMoviesList = mutableListOf<Result>()
-                for(i in movieList.indices){
-                    if(movieList[i].genre_ids.contains(genreId)){
-                        newMoviesList.add(movieList[i])
-                    }
-                }
-                if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.recommendations), newMoviesList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.recommendations), movieList)
+
             }
-            override fun onFailure(call: Call<Recommendations?>, t: Throwable) {
+            override fun onFailure(call: Call<RecommendedMovies?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
@@ -265,21 +223,14 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getUpComingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<Upcoming?> {
-            override fun onResponse(call: Call<Upcoming?>, response: Response<Upcoming?>) {
+            Callback<UpcomingMovies?> {
+            override fun onResponse(call: Call<UpcomingMovies?>, response: Response<UpcomingMovies?>) {
                 val listBody = response.body()
                 val movieList: List<Result> = listBody!!.results
-                var newMoviesList = mutableListOf<Result>()
-                for(i in movieList.indices){
-                    if(movieList[i].genre_ids.contains(genreId)){
-                        newMoviesList.add(movieList[i])
-                    }
-                }
-                if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.upcoming_movies), newMoviesList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.upcoming_movies), movieList)
+
             }
-            override fun onFailure(call: Call<Upcoming?>, t: Throwable) {
+            override fun onFailure(call: Call<UpcomingMovies?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
@@ -289,26 +240,18 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
     /** this method get the list of top rated movies for the selected genre
      */
     private fun getTopRatedMovies() {
-
         val retrofitClient = RetrofitClient.getInstance()
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getTopRatedMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<TopRated?> {
-            override fun onResponse(call: Call<TopRated?>, response: Response<TopRated?>) {
+            Callback<TopRatedMovies?> {
+            override fun onResponse(call: Call<TopRatedMovies?>, response: Response<TopRatedMovies?>) {
                 val listBody = response.body()
                 val movieList: List<Result> = listBody!!.results
-                var newMoviesList = mutableListOf<Result>()
-                for(i in movieList.indices){
-                    if(movieList[i].genre_ids.contains(genreId)){
-                        newMoviesList.add(movieList[i])
-                    }
-                }
-                if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.top_rated), newMoviesList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.top_rated), movieList)
+
             }
-            override fun onFailure(call: Call<TopRated?>, t: Throwable) {
+            override fun onFailure(call: Call<TopRatedMovies?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
@@ -322,40 +265,40 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
         val dataService = retrofitClient?.create(GetDataService::class.java)
 
         dataService?.getNowPlayingMovies(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<NowPlaying?> {
-            override fun onResponse(call: Call<NowPlaying?>, response: Response<NowPlaying?>) {
+            Callback<NowPlayingMovies?> {
+            override fun onResponse(call: Call<NowPlayingMovies?>, response: Response<NowPlayingMovies?>) {
                 val listBody = response.body()
                 val movieList: List<Result> = listBody!!.results
-                var newMoviesList = mutableListOf<Result>()
-                for(i in movieList.indices){
-                    if(movieList[i].genre_ids.contains(genreId)){
-                        newMoviesList.add(movieList[i])
-                    }
-                }
-
-                if(newMoviesList.isNotEmpty()){
-                    addViewToLayoutList(_context!!.getString(R.string.now_playing), newMoviesList)
-                }
+                addViewToLayoutList(_context!!.getString(R.string.now_playing), movieList)
             }
-            override fun onFailure(call: Call<NowPlaying?>, t: Throwable) {
+            override fun onFailure(call: Call<NowPlayingMovies?>, t: Throwable) {
                 _context?.startActivity(Intent(_context, ErrorPageActivity::class.java))
                 Log.e(_context!!.getString(R.string.first_fragment),t.message.toString())
             }
         })
     }
+
     fun addViewToLayoutList(textString:String, movieList:List<Result>){
+        var newMoviesList = mutableListOf<Result>()
+        for(i in movieList.indices){
+            if(movieList[i].genre_ids.contains(genreId)){
+                newMoviesList.add(movieList[i])
+            }
+        }
         val llView: View = LayoutInflater.from(_context).inflate(R.layout.row_add_item,null,false)
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
         setDataToRecyclerView(recyclerView, movieList)
-        layoutList.addView(llView)
-        val nextButton: ImageView = llView.findViewById(R.id.next_btn)
-        nextButton.setOnClickListener{
-            val intent = Intent(_context, ShowCategory::class.java)
+        if(newMoviesList.isNotEmpty()){
+            layoutList.addView(llView)
+        }
+        val relativeLayout: RelativeLayout = llView.findViewById(R.id.rl_add_item)
+        relativeLayout.setOnClickListener{
+            val intent = Intent(_context , ShowCategory::class.java)
             val bundle = Bundle()
-            bundle.putSerializable(_context!!.getString(R.string.key_category_list), movieList as Serializable)
-            bundle.putString(_context!!.getString(R.string.key_category_name), textString)
+            bundle.putSerializable(_context?.getString(R.string.key_category_list), movieList as Serializable)
+            bundle.putString(_context?.getString(R.string.key_category_name), textString)
             intent.putExtras(bundle)
             _context?.startActivity(intent)
         }
@@ -365,12 +308,11 @@ class RVGenreAdapter(private val genreList: List<Genre>, private val layoutList:
      * the list of Results to recyclerView
      * @param recyclerView :
      * @param popularMovieList :
-     * @return
      */
-    private fun setDataToRecyclerView(recyclerView:RecyclerView, popularMovieList:List<Result> ){
+    private fun setDataToRecyclerView(recyclerView:RecyclerView, list:List<Result> ){
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = RVAddViewAdapter(popularMovieList)
+            adapter = RVAddViewAdapter(list)
         }
         recyclerView.layoutManager = LinearLayoutManager(
             _context,

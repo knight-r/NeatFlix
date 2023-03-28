@@ -1,6 +1,6 @@
 package com.example.neatflixdemo.dataclasses
 
-data class TopRated(
+data class TopRatedMovies(
     val page: Int,
     val results: List<Result>,
     val total_pages: Int,

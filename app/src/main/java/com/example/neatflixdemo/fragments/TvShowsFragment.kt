@@ -22,6 +22,7 @@ import com.example.neatflixdemo.adapter.RVGenreAdapter
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentTvshowsBinding
 import com.example.neatflixdemo.dataclasses.*
+import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,51 +32,57 @@ import java.io.Serializable
 class TvShowsFragment : Fragment() {
     private var tvShowFragmentBinding:FragmentTvshowsBinding?=null
     private lateinit var layoutListTv: LinearLayout
-    private var popularTvShowList:List<Result> = emptyList()
-    private var recommendedTvShowList:List<Result> = emptyList()
-    private var topRatedTvShowList:List<Result> = emptyList()
-    private var tvAiringTodayList:List<Result> = emptyList()
+    private lateinit var tvShowData: TvShowData
     private var totalTvShowList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
     private  val TAG:String = "SignUpActivity"
-    private val secondTabName:String = "TvShows"
+    private val secondTabName:String = DashboardTabList.TVSHOWS.name
+    private val tvGenreId: Int = 10759
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         tvShowFragmentBinding = FragmentTvshowsBinding.inflate(layoutInflater,container,false)
         layoutListTv = tvShowFragmentBinding!!.layoutListTv
+        tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf())
         getTvGenreList()
         addView()
-        (activity as DashboardActivity?)?.sendTvShowData(totalTvShowList)
-
+        (activity as DashboardActivity?)?.onReceivedTvShowsData(totalTvShowList)
         tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
-            addView()
+            layoutListTv.removeAllViewsInLayout()
+            tvShowData = TvShowData(emptyList(), emptyList(), emptyList(),  emptyList(), mutableListOf())
+            getPopularTvShows()
+            getRecommendedTvShows()
+            getTopRatedTvShows()
+            getTvAiringToday()
             tvShowFragmentBinding!!.refreshLayout.isRefreshing = false
         }
         return tvShowFragmentBinding?.root
 
     }
 
+    /**
+     * this will add view to layout list
+     */
     private fun addView() {
         hashMap.clear()
-        if(popularTvShowList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.popular),popularTvShowList)
+        if(tvShowData.popularTvShows.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows)
         } else {
             getPopularTvShows()
         }
-        if(recommendedTvShowList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.recommendations),recommendedTvShowList)
+        if(tvShowData.recommendedTvShows.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.recommendations),tvShowData.recommendedTvShows)
         } else {
             getRecommendedTvShows()
         }
-        if(topRatedTvShowList.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.top_rated),topRatedTvShowList)
+        if(tvShowData.topRatedTvShows.isNotEmpty()) {
+            addViewToLayoutList(getString(R.string.top_rated),tvShowData.topRatedTvShows)
         }else {
             getTopRatedTvShows()
         }
-        if(tvAiringTodayList.isNotEmpty()){
-            addViewToLayoutList(getString(R.string.tv_airing_today), tvAiringTodayList)
+        if(tvShowData.tvAiringToday.isNotEmpty()){
+            addViewToLayoutList(getString(R.string.tv_airing_today), tvShowData.tvAiringToday)
         }else {
             getTvAiringToday()
         }
@@ -92,7 +99,6 @@ class TvShowsFragment : Fragment() {
                 val genreListBody = response.body()
                 val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
                 setGenreListToRecyclerView(genreList)
-
             }
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -101,7 +107,9 @@ class TvShowsFragment : Fragment() {
 
     }
 
-
+    /**
+     * this method sets the genreList to recyclerView
+     */
     private fun setGenreListToRecyclerView(genreList: List<Genre>) {
         tvShowFragmentBinding?.rvTvGenreList?.apply {
             layoutManager = LinearLayoutManager(context)
@@ -124,9 +132,9 @@ class TvShowsFragment : Fragment() {
             Callback<TopRatedTvShows?> {
             override fun onResponse(call: Call<TopRatedTvShows?>, response: Response<TopRatedTvShows?>) {
                 val listBody = response.body()
-                topRatedTvShowList = listBody!!.results
-                addViewToLayoutList(getString(R.string.top_rated),topRatedTvShowList)
-                addTotalTvShowList(topRatedTvShowList)
+                tvShowData.topRatedTvShows = listBody!!.results
+                addViewToLayoutList(getString(R.string.top_rated),tvShowData.topRatedTvShows)
+                addTotalTvShowList(tvShowData.topRatedTvShows)
             }
             override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -145,9 +153,9 @@ class TvShowsFragment : Fragment() {
             Callback<PopularTvShows?> {
             override fun onResponse(call: Call<PopularTvShows?>, response: Response<PopularTvShows?>) {
                 val listBody = response.body()
-                popularTvShowList = listBody!!.results
-                addViewToLayoutList(getString(R.string.popular),popularTvShowList)
-                addTotalTvShowList(popularTvShowList)
+                tvShowData.popularTvShows = listBody!!.results
+                addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows)
+                addTotalTvShowList(tvShowData.popularTvShows)
             }
             override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -167,9 +175,9 @@ class TvShowsFragment : Fragment() {
             Callback<TvAiringToday?> {
             override fun onResponse(call: Call<TvAiringToday?>, response: Response<TvAiringToday?>) {
                 val listBody = response.body()
-                tvAiringTodayList = listBody!!.results
-                addViewToLayoutList(getString(R.string.tv_airing_today),tvAiringTodayList)
-                addTotalTvShowList(tvAiringTodayList)
+                tvShowData.tvAiringToday = listBody!!.results
+                addViewToLayoutList(getString(R.string.tv_airing_today), tvShowData.tvAiringToday)
+                addTotalTvShowList( tvShowData.tvAiringToday)
             }
             override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -189,9 +197,9 @@ class TvShowsFragment : Fragment() {
             Callback<RecommendedTvShows?> {
             override fun onResponse(call: Call<RecommendedTvShows?>, response: Response<RecommendedTvShows?>) {
                 val listBody = response.body()
-                recommendedTvShowList = listBody!!.results
-                addViewToLayoutList(getString(R.string.recommendations),recommendedTvShowList)
-                addTotalTvShowList(recommendedTvShowList)
+                tvShowData.recommendedTvShows = listBody!!.results
+                addViewToLayoutList(getString(R.string.recommendations),tvShowData.recommendedTvShows)
+                addTotalTvShowList(tvShowData.recommendedTvShows)
             }
             override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
@@ -202,18 +210,24 @@ class TvShowsFragment : Fragment() {
     /**
      *  this method add view item in layout list
      */
-    fun addViewToLayoutList(textString:String, movieList:List<Result>){
+    fun addViewToLayoutList(textString:String, tvShowList:List<Result>){
+        var newTvShowList = mutableListOf<Result>()
+        for(i in tvShowList.indices){
+            if(tvShowList[i].genre_ids.contains(tvGenreId)){
+                newTvShowList.add(tvShowList[i])
+            }
+        }
         val llView: View = layoutInflater.inflate(R.layout.row_add_item, null, false)
         val textView:TextView = llView.findViewById(R.id.tv_row_add_item)
         textView.text = textString
         val recyclerView: RecyclerView = llView.findViewById(R.id.rv_row_add_item)
-        setDataToRecyclerView(recyclerView, movieList)
+        setDataToRecyclerView(recyclerView, tvShowList)
         layoutListTv.addView(llView)
         val relativeLayout: RelativeLayout = llView.findViewById(R.id.rl_add_item)
         relativeLayout.setOnClickListener{
             val intent = Intent(context, ShowCategory::class.java)
             val bundle = Bundle()
-            bundle.putSerializable(getString(R.string.key_category_list), movieList as Serializable)
+            bundle.putSerializable(getString(R.string.key_category_list), tvShowList as Serializable)
             bundle.putString(getString(R.string.key_category_name), textString)
             intent.putExtras(bundle)
             startActivity(intent)
@@ -233,6 +247,10 @@ class TvShowsFragment : Fragment() {
             false
         )
     }
+
+    /**
+     * it will add all category tvShow list in a single list with unique items
+     */
     fun addTotalTvShowList(tvList:List<Result>){
         for(items in tvList){
             if(!hashMap.contains(items.name)){
@@ -241,8 +259,12 @@ class TvShowsFragment : Fragment() {
             }
         }
     }
+
+    /**
+     * it will send the totalTvShowList to DashboardActivity
+     */
     interface SecondFragmentToActivity{
-        fun sendTvShowData(totalTvShowList:List<Result>)
+        fun onReceivedTvShowsData(totalTvShowList:List<Result>)
     }
 
 

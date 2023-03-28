@@ -15,8 +15,6 @@ interface GetDataService {
     @GET("3/genre/tv/list?")
     fun getTvGenres(@Query("api_key") api_key:String,
                     @Query("language") language:String):Call<GenreList>
-   // https://api.themoviedb.org/3/genre/movie/list?api_key=0733e6cf2426a163f8deedac00044740&language=en-US
-
 
     @GET("3/movie/popular?")
     fun getPopularMovies(@Query("api_key") api_key:String,
@@ -24,7 +22,7 @@ interface GetDataService {
 
     @GET("3/movie/315162/recommendations?")
     fun getRecommendedMovies(@Query("api_key") api_key:String,
-                         @Query("language") language:String):Call<Recommendations>
+                         @Query("language") language:String):Call<RecommendedMovies>
 
     @GET("3/movie/latest?")
     fun getLatestMovies(@Query("api_key") api_key:String,
@@ -32,15 +30,15 @@ interface GetDataService {
 
     @GET("3/movie/now_playing?")
     fun getNowPlayingMovies(@Query("api_key") api_key:String,
-                            @Query("language") language:String):Call<NowPlaying>
+                            @Query("language") language:String):Call<NowPlayingMovies>
 
     @GET("3/movie/top_rated?")
     fun getTopRatedMovies(@Query("api_key") api_key:String,
-                          @Query("language") language:String):Call<TopRated>
+                          @Query("language") language:String):Call<TopRatedMovies>
 
     @GET("3/movie/upcoming?")
     fun getUpComingMovies(@Query("api_key") api_key:String,
-                          @Query("language") language:String):Call<Upcoming>
+                          @Query("language") language:String):Call<UpcomingMovies>
 
     @GET("3/tv/popular?")
     fun getPopularTvShows(@Query("api_key") api_key:String,
@@ -62,12 +60,4 @@ interface GetDataService {
         @Query("api_key") api_key: String,
         @Query("language") language:String
     ): Call<MovieObject>
-
-
-
-
-
-
-//https://api.themoviedb.org/3/movie/popular?api_key=0733e6cf2426a163f8deedac00044740&language=en-US&page=1
-
 }
