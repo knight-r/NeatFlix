@@ -38,7 +38,7 @@ class TvShowsFragment : Fragment() {
     private var hashMap = mutableMapOf<String,Int>()
     private  val TAG:String = "TvShowFragment"
     private val secondTabName:String = DashboardTabList.TVSHOWS.name
-    private var tvGenreId: Int = 0
+    private var tvGenreId: Int = 10759
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -47,6 +47,7 @@ class TvShowsFragment : Fragment() {
         layoutListTv = tvShowFragmentBinding!!.layoutListTv
         tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf())
         getTvGenreList()
+        addView()
         (activity as DashboardActivity?)?.onReceivedTvShowsData(totalTvShowList)
         Utils.genreID = tvGenreId
         Log.e(TAG, Utils.genreID.toString())
@@ -102,9 +103,6 @@ class TvShowsFragment : Fragment() {
                 val genreListBody = response.body()
                 val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
                 setGenreListToRecyclerView(genreList)
-                tvGenreId = genreList[0].id
-                Utils.genreID = tvGenreId
-                addView()
             }
             override fun onFailure(call: Call<GenreList?>, t: Throwable) {
                 startActivity(Intent(context, ErrorPageActivity::class.java))
