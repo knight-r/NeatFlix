@@ -10,6 +10,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.R
@@ -17,8 +18,12 @@ import com.example.neatflixdemo.adapter.SearchAdapter
 import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.ActivitySearchBinding
 import com.example.neatflixdemo.dataclasses.*
+import com.example.neatflixdemo.network.ResourceNotifier
 import com.example.neatflixdemo.network.RetrofitClient
+import com.example.neatflixdemo.repository.TvShowRepository
 import com.example.neatflixdemo.services.GetDataService
+import com.example.neatflixdemo.viewmodel.TvShowViewModel
+import com.example.neatflixdemo.viewmodel.TvShowViewModelFactory
 import org.jetbrains.annotations.Nullable
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,6 +40,8 @@ class SearchActivity : BaseActivity(), OnClickListener{
     private lateinit var searchView: SearchView
     private val REQUEST_CODE_SPEECH_INPUT:Int = 1
     private val TAG:String = "SearchActivity"
+    private lateinit var tvShowViewModel: TvShowViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
@@ -44,6 +51,9 @@ class SearchActivity : BaseActivity(), OnClickListener{
         searchRV = searchBinding.rvSearch
         searchView = searchBinding.searchView
         searchView.isIconified = false
+        val retrofitClient = RetrofitClient.getInstance()
+        val dataService = retrofitClient!!.create(GetDataService::class.java)
+        tvShowViewModel = ViewModelProvider(this, TvShowViewModelFactory(TvShowRepository(dataService)))[TvShowViewModel::class.java]
 
         actionBar?.hide()
 
@@ -203,93 +213,85 @@ class SearchActivity : BaseActivity(), OnClickListener{
         getTvAiringToday()
         getRecommendedTvShows()
     }
-
     /** this method get the list of top rated TvShows
      */
     private fun getTopRatedTvShows() {
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getTopRatedTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
-            Callback<TopRatedTvShows?> {
-            override fun onResponse(call: Call<TopRatedTvShows?>, response: Response<TopRatedTvShows?>) {
-                val listBody = response.body()
-                val tvList :List<Result> = listBody!!.results
-                addTotalTvShowList(tvList)
+        tvShowViewModel.getTopRatedTvShows()
+        tvShowViewModel.topRatedTvShows.observe(this){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    addTotalTvShowList(resource.data!!.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
-                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
+        }
     }
 
     /** this method get the list of popular TvShows
      */
     private fun getPopularTvShows(){
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getPopularTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
-            Callback<PopularTvShows?> {
-            override fun onResponse(call: Call<PopularTvShows?>, response: Response<PopularTvShows?>) {
-                val listBody = response.body()
-                val tvList :List<Result> = listBody!!.results
-                addTotalTvShowList(tvList)
+        tvShowViewModel.getPopularTvShows()
+        tvShowViewModel.popularTvShows.observe(this){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    addTotalTvShowList(resource.data!!.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
-                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e(TAG ,t.message.toString())
-            }
-        })
-
+        }
     }
 
     /** this method get the list of TvShows Airing today
      */
     private fun getTvAiringToday(){
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getTvAiringToday(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
-            Callback<TvAiringToday?> {
-            override fun onResponse(call: Call<TvAiringToday?>, response: Response<TvAiringToday?>) {
-                val listBody = response.body()
-                val tvList :List<Result> = listBody!!.results
-                addTotalTvShowList(tvList)
+        tvShowViewModel.getTvAiringToday()
+        tvShowViewModel.tvAiringToday.observe(this){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                  addTotalTvShowList(resource.data!!.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
-                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
-
+        }
     }
 
     /** this method get the list of recommended TvShows
      */
     private fun getRecommendedTvShows() {
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getRecommendedTvShows(Constants.API_KEY_TMDB,"en-US")?.enqueue(object:
-            Callback<RecommendedTvShows?> {
-            override fun onResponse(call: Call<RecommendedTvShows?>, response: Response<RecommendedTvShows?>) {
-                val listBody = response.body()
-                val tvList :List<Result> = listBody!!.results
-                addTotalTvShowList(tvList)
+        tvShowViewModel.getRecommendedTvShows()
+        tvShowViewModel.recommendedtvShows.observe(this){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                  addTotalTvShowList(resource.data!!.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
-                startActivity(Intent(this@SearchActivity, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
+        }
     }
-
     /**
      * this method adds list of all categories in single list with unique items
      */
-    fun addTotalTvShowList(tvList:List<Result>){
+    private fun addTotalTvShowList(tvList:List<Result>){
         for(items in tvList){
             if(!hashMap.contains(items.name)){
                 hashMap[items.name] = 1

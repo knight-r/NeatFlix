@@ -2,6 +2,7 @@ package com.example.neatflixdemo.services
 
 import com.example.neatflixdemo.dataclasses.*
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -9,53 +10,53 @@ import retrofit2.http.Query
 interface GetDataService {
 
     @GET("3/genre/movie/list?")
-    fun getMovieGenres(@Query("api_key") api_key:String,
-                       @Query("language") language:String):Call<GenreList>
+    suspend fun getMovieGenres(@Query("api_key") api_key:String,
+                       @Query("language") language:String):Response<GenreList>
 
     @GET("3/genre/tv/list?")
-    fun getTvGenres(@Query("api_key") api_key:String,
-                    @Query("language") language:String):Call<GenreList>
+    suspend fun getTvShowGenres(@Query("api_key") api_key:String,
+                    @Query("language") language:String):Response<GenreList>
 
     @GET("3/movie/popular?")
-    fun getPopularMovies(@Query("api_key") api_key:String,
-                         @Query("language") language:String):Call<PopularMovies>
+    suspend fun getPopularMovies(@Query("api_key") api_key:String,
+                         @Query("language") language:String):Response<PopularMovies>
 
     @GET("3/movie/315162/recommendations?")
-    fun getRecommendedMovies(@Query("api_key") api_key:String,
-                         @Query("language") language:String):Call<RecommendedMovies>
+    suspend fun getRecommendedMovies(@Query("api_key") api_key:String,
+                         @Query("language") language:String):Response<RecommendedMovies>
 
     @GET("3/movie/latest?")
-    fun getLatestMovies(@Query("api_key") api_key:String,
+    suspend fun getLatestMovies(@Query("api_key") api_key:String,
                         @Query("language") language:String):Call<PopularMovies>
 
     @GET("3/movie/now_playing?")
-    fun getNowPlayingMovies(@Query("api_key") api_key:String,
-                            @Query("language") language:String):Call<NowPlayingMovies>
+    suspend fun getNowPlayingMovies(@Query("api_key") api_key:String,
+                            @Query("language") language:String):Response<NowPlayingMovies>
 
     @GET("3/movie/top_rated?")
-    fun getTopRatedMovies(@Query("api_key") api_key:String,
-                          @Query("language") language:String):Call<TopRatedMovies>
+    suspend fun getTopRatedMovies(@Query("api_key") api_key:String,
+                          @Query("language") language:String):Response<TopRatedMovies>
 
     @GET("3/movie/upcoming?")
-    fun getUpComingMovies(@Query("api_key") api_key:String,
-                          @Query("language") language:String):Call<UpcomingMovies>
+    suspend fun getUpComingMovies(@Query("api_key") api_key:String,
+                          @Query("language") language:String):Response<UpcomingMovies>
 
     @GET("3/tv/popular?")
-    fun getPopularTvShows(@Query("api_key") api_key:String,
-                         @Query("language") language:String):Call<PopularTvShows>
+    suspend fun getPopularTvShows(@Query("api_key") api_key:String,
+                         @Query("language") language:String):Response<PopularTvShows>
 
     @GET("3/tv/top_rated?")
-    fun getTopRatedTvShows(@Query("api_key") api_key:String,
-                          @Query("language") language:String):Call<TopRatedTvShows>
+    suspend fun getTopRatedTvShows(@Query("api_key") api_key:String,
+                          @Query("language") language:String):Response<TopRatedTvShows>
     @GET("3/tv/airing_today?")
-    fun getTvAiringToday(@Query("api_key") api_key:String,
-                           @Query("language") language:String):Call<TvAiringToday>
+    suspend fun getTvAiringToday(@Query("api_key") api_key:String,
+                           @Query("language") language:String):Response<TvAiringToday>
     @GET("3/tv/airing_today?")
-    fun getRecommendedTvShows(@Query("api_key") api_key:String,
-                         @Query("language") language:String):Call<RecommendedTvShows>
+    suspend fun getRecommendedTvShows(@Query("api_key") api_key:String,
+                         @Query("language") language:String):Response<RecommendedTvShows>
 
     @GET("3/movie/{movie_id}/videos?")
-    fun getMovieObject(
+    suspend fun getMovieObject(
         @Path("movie_id") movieId: String,
         @Query("api_key") api_key: String,
         @Query("language") language:String

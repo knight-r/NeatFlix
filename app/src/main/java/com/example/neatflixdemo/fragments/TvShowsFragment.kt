@@ -1,5 +1,4 @@
 package com.example.neatflixdemo.fragments
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neatflixdemo.activities.DashboardActivity
@@ -23,94 +23,106 @@ import com.example.neatflixdemo.constants.Constants
 import com.example.neatflixdemo.databinding.FragmentTvshowsBinding
 import com.example.neatflixdemo.dataclasses.*
 import com.example.neatflixdemo.enums.DashboardTabList
+import com.example.neatflixdemo.network.ResourceNotifier
 import com.example.neatflixdemo.network.RetrofitClient
+import com.example.neatflixdemo.repository.MovieRepository
+import com.example.neatflixdemo.repository.TvShowRepository
 import com.example.neatflixdemo.utils.Utils
-import com.google.android.exoplayer2.util.Util
+import com.example.neatflixdemo.viewmodel.MovieViewModel
+import com.example.neatflixdemo.viewmodel.MovieViewModelFactory
+import com.example.neatflixdemo.viewmodel.TvShowViewModel
+import com.example.neatflixdemo.viewmodel.TvShowViewModelFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.Serializable
 
-class TvShowsFragment : Fragment() {
+class TvShowsFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
     private var tvShowFragmentBinding:FragmentTvshowsBinding?=null
     private lateinit var layoutListTv: LinearLayout
     private lateinit var tvShowData: TvShowData
     private var totalTvShowList = mutableListOf<Result>()
     private var hashMap = mutableMapOf<String,Int>()
-    private  val TAG:String = "TvShowFragment"
-    private val secondTabName:String = DashboardTabList.TVSHOWS.name
-    private var tvGenreId: Int = 0
+    private lateinit var tvShowViewModel: TvShowViewModel
+    private  var genreItemPosition: Int =0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         tvShowFragmentBinding = FragmentTvshowsBinding.inflate(layoutInflater,container,false)
         layoutListTv = tvShowFragmentBinding!!.layoutListTv
-        tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf())
-        getTvGenreList()
-
+        tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf(),
+            emptyList()
+        )
         (activity as DashboardActivity?)?.onReceivedTvShowsData(totalTvShowList)
-        Log.e(TAG, Utils.genreID.toString())
+        val retrofitClient = RetrofitClient.getInstance()
+        val dataService = retrofitClient!!.create(GetDataService::class.java)
+        tvShowViewModel = ViewModelProvider(this, TvShowViewModelFactory(TvShowRepository(dataService)))[TvShowViewModel::class.java]
+        getTvGenres()
+
         tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
-            tvGenreId = Utils.genreID
             layoutListTv.removeAllViewsInLayout()
-            tvShowData = TvShowData(emptyList(), emptyList(), emptyList(),  emptyList(), mutableListOf())
-            getPopularTvShows()
-            getRecommendedTvShows()
-            getTopRatedTvShows()
-            getTvAiringToday()
+            addView(tvShowData.genres[genreItemPosition].id)
             tvShowFragmentBinding!!.refreshLayout.isRefreshing = false
         }
         return tvShowFragmentBinding?.root
 
     }
 
+    override fun getGenreItemPosition(position: Int) {
+        genreItemPosition = position
+        if(tvShowData.genres.isNotEmpty()){
+            layoutListTv.removeAllViewsInLayout()
+            addView(tvShowData.genres[position].id)
+        }
+    }
+
     /**
      * this will add view to layout list
      */
-    private fun addView() {
+    private fun addView(genreId: Int) {
         hashMap.clear()
         if(tvShowData.popularTvShows.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows)
+            addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows, genreId)
         } else {
-            getPopularTvShows()
+            getPopularTvShows(genreId)
         }
         if(tvShowData.recommendedTvShows.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.recommendations),tvShowData.recommendedTvShows)
+            addViewToLayoutList(getString(R.string.recommendations),tvShowData.recommendedTvShows,genreId)
         } else {
-            getRecommendedTvShows()
+            getRecommendedTvShows(genreId)
         }
         if(tvShowData.topRatedTvShows.isNotEmpty()) {
-            addViewToLayoutList(getString(R.string.top_rated),tvShowData.topRatedTvShows)
+            addViewToLayoutList(getString(R.string.top_rated),tvShowData.topRatedTvShows,genreId)
         }else {
-            getTopRatedTvShows()
+            getTopRatedTvShows(genreId)
         }
         if(tvShowData.tvAiringToday.isNotEmpty()){
-            addViewToLayoutList(getString(R.string.tv_airing_today), tvShowData.tvAiringToday)
+            addViewToLayoutList(getString(R.string.tv_airing_today), tvShowData.tvAiringToday, genreId)
         }else {
-            getTvAiringToday()
+            getTvAiringToday(genreId)
         }
 
     }
     /** this method get the list of TvShows genres
      */
-    private fun getTvGenreList(){
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-        dataService?.getTvGenres(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<GenreList?> {
-            override fun onResponse(call: Call<GenreList?>, response: Response<GenreList?>) {
-                val genreListBody = response.body()
-                val genreList:List<Genre> = genreListBody?.genres ?: emptyList()
-                setGenreListToRecyclerView(genreList)
-                tvGenreId = genreList[0].id
-                Utils.genreID = tvGenreId
-                addView()
+    private fun getTvGenres(){
+        tvShowViewModel.getTvShowGenres()
+        tvShowViewModel.tvShowGenres.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    tvShowData.genres = resource.data!!.genres
+                    setGenreListToRecyclerView(tvShowData.genres)
+                    addView(tvShowData.genres[0].id)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<GenreList?>, t: Throwable) {
-                startActivity(Intent(context, ErrorPageActivity::class.java))
-            }
-        })
+        }
 
     }
 
@@ -120,7 +132,7 @@ class TvShowsFragment : Fragment() {
     private fun setGenreListToRecyclerView(genreList: List<Genre>) {
         tvShowFragmentBinding?.rvTvGenreList?.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = RVGenreAdapter(genreList,layoutListTv,secondTabName)
+            adapter = RVGenreAdapter(MovieFragment(),this@TvShowsFragment,genreList, "")
         }
         tvShowFragmentBinding?.rvTvGenreList?.layoutManager = LinearLayoutManager(
             context,
@@ -131,96 +143,94 @@ class TvShowsFragment : Fragment() {
 
     /** this method get the list of top rated TvShows
      */
-    private fun getTopRatedTvShows() {
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getTopRatedTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<TopRatedTvShows?> {
-            override fun onResponse(call: Call<TopRatedTvShows?>, response: Response<TopRatedTvShows?>) {
-                val listBody = response.body()
-                tvShowData.topRatedTvShows = listBody!!.results
-                addViewToLayoutList(getString(R.string.top_rated),tvShowData.topRatedTvShows)
-                addTotalTvShowList(tvShowData.topRatedTvShows)
+    private fun getTopRatedTvShows(genreId: Int) {
+        tvShowViewModel.getTopRatedTvShows()
+        tvShowViewModel.topRatedTvShows.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    tvShowData.topRatedTvShows = resource.data!!.results
+                    addViewToLayoutList(getString(R.string.top_rated), resource.data.results, genreId )
+                    addTotalTvShowList(resource.data.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<TopRatedTvShows?>, t: Throwable) {
-                startActivity(Intent(context, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
+        }
     }
 
     /** this method get the list of popular TvShows
      */
-    private fun getPopularTvShows(){
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getPopularTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<PopularTvShows?> {
-            override fun onResponse(call: Call<PopularTvShows?>, response: Response<PopularTvShows?>) {
-                val listBody = response.body()
-                tvShowData.popularTvShows = listBody!!.results
-                addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows)
-                addTotalTvShowList(tvShowData.popularTvShows)
+    private fun getPopularTvShows(genreId: Int){
+        tvShowViewModel.getPopularTvShows()
+        tvShowViewModel.popularTvShows.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    tvShowData.popularTvShows = resource.data!!.results
+                    addViewToLayoutList(getString(R.string.popular), resource.data.results,genreId )
+                    addTotalTvShowList(resource.data.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<PopularTvShows?>, t: Throwable) {
-                startActivity(Intent(context, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
-
+        }
     }
 
     /** this method get the list of TvShows Airing today
      */
-    private fun getTvAiringToday(){
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getTvAiringToday(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<TvAiringToday?> {
-            override fun onResponse(call: Call<TvAiringToday?>, response: Response<TvAiringToday?>) {
-                val listBody = response.body()
-                tvShowData.tvAiringToday = listBody!!.results
-                addViewToLayoutList(getString(R.string.tv_airing_today), tvShowData.tvAiringToday)
-                addTotalTvShowList( tvShowData.tvAiringToday)
+    private fun getTvAiringToday(genreId: Int){
+        tvShowViewModel.getTvAiringToday()
+        tvShowViewModel.tvAiringToday.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    tvShowData.tvAiringToday = resource.data!!.results
+                    addViewToLayoutList(getString(R.string.tv_airing_today), resource.data.results,genreId )
+                    addTotalTvShowList(resource.data.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<TvAiringToday?>, t: Throwable) {
-                startActivity(Intent(context, ErrorPageActivity::class.java))
-                Log.e(TAG ,t.message.toString())
-            }
-        })
-
+        }
     }
 
     /** this method get the list of recommended TvShows
      */
-    private fun getRecommendedTvShows() {
-        val retrofitClient = RetrofitClient.getInstance()
-        val dataService = retrofitClient?.create(GetDataService::class.java)
-
-        dataService?.getRecommendedTvShows(Constants.API_KEY_TMDB,Constants.API_LANGUAGE)?.enqueue(object:
-            Callback<RecommendedTvShows?> {
-            override fun onResponse(call: Call<RecommendedTvShows?>, response: Response<RecommendedTvShows?>) {
-                val listBody = response.body()
-                tvShowData.recommendedTvShows = listBody!!.results
-                addViewToLayoutList(getString(R.string.recommendations),tvShowData.recommendedTvShows)
-                addTotalTvShowList(tvShowData.recommendedTvShows)
+    private fun getRecommendedTvShows(genreId: Int) {
+        tvShowViewModel.getRecommendedTvShows()
+        tvShowViewModel.recommendedtvShows.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is ResourceNotifier.Loading -> {
+                    Log.e("Response loading: ","loading")
+                }
+                is ResourceNotifier.Success -> {
+                    tvShowData.recommendedTvShows = resource.data!!.results
+                    addViewToLayoutList(getString(R.string.recommendations), resource.data.results,genreId )
+                    addTotalTvShowList(resource.data.results)
+                }
+                is ResourceNotifier.Error -> {
+                    Log.e("Response Error: ", resource?.message.toString())
+                }
             }
-            override fun onFailure(call: Call<RecommendedTvShows?>, t: Throwable) {
-                startActivity(Intent(context, ErrorPageActivity::class.java))
-                Log.e(TAG,t.message.toString())
-            }
-        })
+        }
     }
     /**
      *  this method add view item in layout list
      */
-    fun addViewToLayoutList(textString:String, tvShowList:List<Result>){
+    private fun addViewToLayoutList(textString:String, tvShowList:List<Result>, genreId: Int){
         var newTvShowList = mutableListOf<Result>()
         for(i in tvShowList.indices){
-            if(tvShowList[i].genre_ids.contains(tvGenreId)){
+            if(tvShowList[i].genre_ids.contains(genreId)){
                 newTvShowList.add(tvShowList[i])
             }
         }
@@ -260,7 +270,7 @@ class TvShowsFragment : Fragment() {
     /**
      * it will add all category tvShow list in a single list with unique items
      */
-    fun addTotalTvShowList(tvList:List<Result>){
+    private fun addTotalTvShowList(tvList:List<Result>){
         for(items in tvList){
             if(!hashMap.contains(items.name)){
                 totalTvShowList.add(items)
@@ -275,6 +285,8 @@ class TvShowsFragment : Fragment() {
     interface SecondFragmentToActivity{
         fun onReceivedTvShowsData(totalTvShowList:List<Result>)
     }
+
+
 
 
 }

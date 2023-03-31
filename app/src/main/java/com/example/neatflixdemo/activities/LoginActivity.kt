@@ -65,7 +65,7 @@ class LoginActivity : BaseActivity() {
      */
     private fun checkUserLoggedIn() {
         if (SharedPrefHelper.getSharedPrefObject(applicationContext).getBoolean(Constants.KEY_IS_LOGGED_IN,false)) {
-            if (!isHardwareAvailable || !isFingerprintAvailable) {
+           if (!isHardwareAvailable || !isFingerprintAvailable) {
                 startActivity(Intent(this@LoginActivity,DashboardActivity::class.java))
             } else {
                 enableBiometricCheck()

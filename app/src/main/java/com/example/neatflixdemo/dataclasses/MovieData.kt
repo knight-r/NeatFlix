@@ -6,6 +6,7 @@ data class MovieData(
     var topRatedMovies: List<Result>,
     var nowPlayingMovies: List<Result>,
     var upcomingMovies: List<Result>,
-    var totalMovies : MutableList<Result>
+    var totalMovies : MutableList<Result>,
+    var genres : List<Genre>
 )
 
