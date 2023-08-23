@@ -12,7 +12,7 @@ import com.example.neatflixdemo.enums.DashboardTabList
 import com.example.neatflixdemo.fragments.MovieFragment
 import com.example.neatflixdemo.fragments.TvShowsFragment
 
-class RVGenreAdapter(private val fragment: MovieFragment,
+class RVGenreAdapter(private val movieFragment: MovieFragment,
                      private val tvShowFragment: TvShowsFragment,
                      private val genreList: List<Genre>,
                      private val  mTabName: String
@@ -28,15 +28,15 @@ class RVGenreAdapter(private val fragment: MovieFragment,
         holder.itemView.setOnClickListener {
             selectedPosition = position
             if (mTabName == DashboardTabList.MOVIES.name) {
-                fragment.getGenreItemPosition(position)
+                movieFragment.getGenreItemPosition(position)
             }else {
                 tvShowFragment.getGenreItemPosition(position)
             }
             notifyDataSetChanged()
         }
-        if(selectedPosition == position) {
+        if (selectedPosition == position) {
             holder.textViewGenre.setBackgroundResource(R.drawable.item_change_color)
-        }else {
+        } else {
             holder.textViewGenre.setBackgroundResource(R.drawable.round_edge_item)
         }
     }

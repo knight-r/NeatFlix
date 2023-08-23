@@ -94,7 +94,6 @@ class SignUpActivity : BaseActivity() {
         if (username == "" || password == "" ||
             resetPassword == "" || address == "" ||
             phoneNumber == "" || dateOfBirth == "") {
-
             return false
         } else if (password != resetPassword) {
             signupBinding.etRegConfirmPassword?.error = getString(R.string.password_donot_match)

@@ -39,7 +39,6 @@ class SearchActivity : BaseActivity(), OnClickListener{
     private var hashMap = HashMap<String,Int>()
     private lateinit var searchView: SearchView
     private val REQUEST_CODE_SPEECH_INPUT:Int = 1
-    private val TAG:String = "SearchActivity"
     private lateinit var tvShowViewModel: TvShowViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

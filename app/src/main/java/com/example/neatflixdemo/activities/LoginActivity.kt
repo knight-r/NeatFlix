@@ -70,6 +70,8 @@ class LoginActivity : BaseActivity() {
             } else {
                 enableBiometricCheck()
             }
+        }else{
+            loginBinding.ivFingerPrint.visibility = View.GONE
         }
     }
 
@@ -155,12 +157,8 @@ class LoginActivity : BaseActivity() {
             sharedPreferenceEditor.putString(Constants.KEY_CURRENT_USER,userName)
             sharedPreferenceEditor.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
             sharedPreferenceEditor.apply()
+            startActivity(Intent(this, DashboardActivity::class.java))
 
-            if(count <= 3) {
-                enableBiometricCheck()
-            } else {
-                startActivity(Intent(this, DashboardActivity::class.java))
-            }
         } else {
             Utils.showMessage(this, getString(R.string.user_not_found))
         }

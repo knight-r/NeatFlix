@@ -19,7 +19,9 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_110sdp"
+            >
             <LinearLayout
                 android:id="@+id/layout_list_tv"
                 android:layout_width="wrap_content"

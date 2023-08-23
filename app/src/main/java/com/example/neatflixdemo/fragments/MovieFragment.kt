@@ -1,5 +1,6 @@
 package com.example.neatflixdemo.fragments
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -41,10 +43,12 @@ class MovieFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
     private var hashMap = mutableMapOf<String,Int>()
     private lateinit var movieViewModel: MovieViewModel
     private var genreItemPosition: Int = 0
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        progressDialog = ProgressDialog(context)
         fragmentMoviesBinding = FragmentMoviesBinding.inflate(layoutInflater,container,false)
         llViewBinding = RowAddItemBinding.inflate(layoutInflater,container,false)
         layoutList = fragmentMoviesBinding!!.layoutList
@@ -82,6 +86,14 @@ class MovieFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
                 }
                 is ResourceNotifier.Success -> {
                     movieData.genres = resource.data!!.genres
+
+                    /*
+                    var genreList: MutableList<Genre> = mutableListOf()
+                    genreList.add(Genre(-1,"All"))
+                    for( items in movieData.genres) {
+                        genreList.add(items)
+                    }
+                     */
                     setGenreListToRecyclerView(movieData.genres)
                     addView(movieData.genres[0].id)
                     Log.e("Response Success: ", resource.data.toString())
@@ -112,6 +124,9 @@ class MovieFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
      *  this method will add views if list is not empty else fetch the data and then add the view
      */
     private fun addView(genreId: Int){
+        progressDialog.setTitle("Loading...")
+        progressDialog.setMessage("Loading...")
+        progressDialog.show()
         if(movieData.popularMovies.isNotEmpty()) {
             addViewToLayoutList(getString(R.string.popular),movieData.popularMovies, genreId)
         } else {
@@ -137,6 +152,7 @@ class MovieFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
         }else {
             getUpComingMovies(genreId)
         }
+        progressDialog.cancel()
     }
 
     /** this method get the list of recommended movies

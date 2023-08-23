@@ -49,4 +49,9 @@ class VideoPlayerActivity : AppCompatActivity(){
             videoBinding.playerView.player = it
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        player?.stop()
+    }
 }

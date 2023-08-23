@@ -1,4 +1,5 @@
 package com.example.neatflixdemo.fragments
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -45,10 +46,13 @@ class TvShowsFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
     private var hashMap = mutableMapOf<String,Int>()
     private lateinit var tvShowViewModel: TvShowViewModel
     private  var genreItemPosition: Int =0
+    private lateinit var progressDialog: ProgressDialog
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        progressDialog = ProgressDialog(context)
         tvShowFragmentBinding = FragmentTvshowsBinding.inflate(layoutInflater,container,false)
         layoutListTv = tvShowFragmentBinding!!.layoutListTv
         tvShowData = TvShowData(emptyList(), emptyList(), emptyList(), emptyList(), mutableListOf(),
@@ -60,6 +64,7 @@ class TvShowsFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
         tvShowViewModel = ViewModelProvider(this, TvShowViewModelFactory(TvShowRepository(dataService)))[TvShowViewModel::class.java]
         getTvGenres()
 
+        progressDialog.setMessage("Loading...")
         tvShowFragmentBinding!!.refreshLayout.setOnRefreshListener {
             layoutListTv.removeAllViewsInLayout()
             addView(tvShowData.genres[genreItemPosition].id)
@@ -82,6 +87,7 @@ class TvShowsFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
      */
     private fun addView(genreId: Int) {
         hashMap.clear()
+        progressDialog.show()
         if(tvShowData.popularTvShows.isNotEmpty()) {
             addViewToLayoutList(getString(R.string.popular),tvShowData.popularTvShows, genreId)
         } else {
@@ -102,6 +108,7 @@ class TvShowsFragment : Fragment(), RVGenreAdapter.AdapterToFragment {
         }else {
             getTvAiringToday(genreId)
         }
+        progressDialog.cancel()
 
     }
     /** this method get the list of TvShows genres
